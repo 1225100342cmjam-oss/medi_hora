@@ -1,16 +1,24 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'app_state.dart';
+import 'theme.dart';
+import 'screens/splash_screen.dart';
 
-void main() {
-  runApp(const MainApp());
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  final state = AppState();
+  await state.load();
+  runApp(ChangeNotifierProvider.value(value: state, child: const MediHoraApp()));
 }
 
-class MainApp extends StatelessWidget {
-  const MainApp({super.key});
+class MediHoraApp extends StatelessWidget {
+  const MediHoraApp({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: Scaffold(body: Center(child: Text('Hello World!'))),
-    );
-  }
+  Widget build(BuildContext context) => MaterialApp(
+        title: 'MediHora',
+        debugShowCheckedModeBanner: false,
+        theme: buildTheme(),
+        home: const SplashScreen(),
+      );
 }
