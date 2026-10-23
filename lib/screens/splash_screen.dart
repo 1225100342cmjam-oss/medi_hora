@@ -1,8 +1,8 @@
-import 'dart:math';
 import 'package:flutter/material.dart';
 import '../theme.dart';
 import 'auth_gate.dart';
 
+/// Pantalla "Inicio" (splash).
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
   @override
@@ -12,12 +12,6 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderStateMixin {
   late final AnimationController _c =
       AnimationController(vsync: this, duration: const Duration(milliseconds: 1200))..forward();
-
-  static const _icons = [
-    Icons.medication, Icons.favorite, Icons.vaccines, Icons.thermostat,
-    Icons.medical_services, Icons.health_and_safety, Icons.local_hospital,
-    Icons.monitor_heart, Icons.healing, Icons.science,
-  ];
 
   @override
   void initState() {
@@ -38,58 +32,44 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
     super.dispose();
   }
 
-  Widget _ring(double radius, int count, double size, double offset) {
-    return Stack(children: [
-      for (var i = 0; i < count; i++)
+  @override
+  Widget build(BuildContext context) {
+    final size = MediaQuery.of(context).size;
+    return Scaffold(
+      body: Stack(children: [
+        Positioned.fill(child: CustomPaint(painter: _FondoPainter())),
         Positioned(
-          left: 150 + radius * cos(2 * pi * i / count + offset) - size / 2,
-          top: 150 + radius * sin(2 * pi * i / count + offset) - size / 2,
-          child: Icon(_icons[(i + count) % _icons.length], color: Colors.white, size: size),
+          top: size.height * 0.16,
+          left: size.width * 0.14,
+          right: size.width * 0.14,
+          child: FadeTransition(
+            opacity: _c,
+            child: Image.asset('assets/images/splash_icons.png', fit: BoxFit.contain),
+          ),
         ),
-    ]);
+        Positioned(
+          left: 24,
+          bottom: 36,
+          child: FadeTransition(opacity: _c, child: Text('MediHora', style: slab(52))),
+        ),
+      ]),
+    );
+  }
+}
+
+class _FondoPainter extends CustomPainter {
+  @override
+  void paint(Canvas canvas, Size size) {
+    canvas.drawRect(Offset.zero & size, Paint()..color = kRojo);
+    final path = Path()
+      ..moveTo(0, size.height * 0.10)
+      ..lineTo(size.width, size.height * 0.66)
+      ..lineTo(size.width, size.height)
+      ..lineTo(0, size.height)
+      ..close();
+    canvas.drawPath(path, Paint()..color = kRojoOscuro);
   }
 
   @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        width: double.infinity,
-        decoration: const BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [kRojo, kRojoOscuro],
-          ),
-        ),
-        child: FadeTransition(
-          opacity: _c,
-          child: SafeArea(
-            child: Column(children: [
-              const Spacer(flex: 2),
-              SizedBox(
-                width: 300,
-                height: 300,
-                child: Stack(children: [
-                  _ring(0, 1, 70, 0),
-                  _ring(70, 6, 34, 0.3),
-                  _ring(125, 11, 38, 0),
-                ]),
-              ),
-              const Spacer(flex: 3),
-              const Padding(
-                padding: EdgeInsets.only(bottom: 40),
-                child: Text('MediHora',
-                    style: TextStyle(
-                      fontFamily: 'serif',
-                      fontSize: 52,
-                      fontWeight: FontWeight.w900,
-                      color: Colors.white,
-                    )),
-              ),
-            ]),
-          ),
-        ),
-      ),
-    );
-  }
+  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
 }

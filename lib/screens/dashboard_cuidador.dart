@@ -2,55 +2,68 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../app_state.dart';
 import '../theme.dart';
-import 'med_form_screen.dart';
-import 'widgets.dart';
+import 'med_tile.dart';
+import 'ui.dart';
 
-/// DASHBOARD 3 · Cuidador
+/// DASHBOARD 2 · Cuidador  →  "Mis pacientes"
 class DashboardCuidador extends StatelessWidget {
-  final void Function(int) onGoTo;
-  const DashboardCuidador({super.key, required this.onGoTo});
+  const DashboardCuidador({super.key});
 
   @override
   Widget build(BuildContext context) {
     final s = context.watch<AppState>();
     final pacientes = s.pacientes;
+    return PinkCard(
+      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+        const CardHeader('Mis pacientes'),
+        Expanded(
+          child: pacientes.isEmpty
+              ? const EmptyText('No hay pacientes registrados todavía.')
+              : ListView.builder(
+                  itemCount: pacientes.length,
+                  itemBuilder: (_, i) {
+                    final p = pacientes[i];
+                    final total = s.medsDe(p.email).length;
+                    final pend = s.pendientesHoy(p.email);
+                    return ListTile(
+                      contentPadding: EdgeInsets.zero,
+                      leading: const Icon(Icons.person_outline, color: kTinta),
+                      title: Text(p.nombre),
+                      subtitle: Text('$total medicinas · $pend pendientes hoy'),
+                      trailing: StatusChip(
+                        label: pend == 0 ? 'Al día' : 'Pendiente',
+                        color: pend == 0 ? kVerde : kNaranja,
+                      ),
+                      onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (_) => PacienteMedsScreen(email: p.email))),
+                    );
+                  },
+                ),
+        ),
+        const Divider(color: Colors.black54, height: 1),
+      ]),
+    );
+  }
+}
 
-    return ListView(padding: const EdgeInsets.all(16), children: [
-      DashHeader(
-          saludo: 'Hola, ${s.current!.nombre}',
-          rol: 'Supervisión de pacientes',
-          icon: Icons.volunteer_activism),
-      const SizedBox(height: 16),
-      Text('Estado de pacientes', style: Theme.of(context).textTheme.titleMedium),
-      const SizedBox(height: 8),
-      if (pacientes.isEmpty)
-        const SizedBox(
-            height: 180,
-            child: EmptyState(icon: Icons.elderly, text: 'Aún no hay pacientes registrados'))
-      else
-        for (final p in pacientes)
-          Builder(builder: (_) {
-            final suyos = s.meds.where((m) => m.pacienteEmail == p.email).toList();
-            final pend = suyos.where((m) => !m.tomado).length;
-            return Card(
-              elevation: 0,
-              child: ListTile(
-                leading: CircleAvatar(
-                    backgroundColor: kRojo, child: Text(p.nombre[0].toUpperCase())),
-                title: Text(p.nombre),
-                subtitle: Text('${suyos.length} recordatorios · $pend pendientes'),
-                trailing: Icon(pend == 0 ? Icons.check_circle : Icons.warning_amber,
-                    color: pend == 0 ? Colors.green : Colors.orange),
-              ),
-            );
-          }),
-      const SizedBox(height: 12),
-      FilledButton.icon(
-        icon: const Icon(Icons.add_alarm),
-        label: const Text('Programar medicamento'),
-        onPressed: () =>
-            Navigator.push(context, MaterialPageRoute(builder: (_) => const MedFormScreen())),
+/// Detalle: medicinas de un paciente (vista del cuidador).
+class PacienteMedsScreen extends StatelessWidget {
+  final String email;
+  const PacienteMedsScreen({super.key, required this.email});
+
+  @override
+  Widget build(BuildContext context) {
+    final s = context.watch<AppState>();
+    return RedPage(
+      title: s.nombreDe(email),
+      child: PinkCard(
+        child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          const CardHeader('Medicinas'),
+          Expanded(child: MedList(meds: s.medsDe(email))),
+        ]),
       ),
-    ]);
+    );
   }
 }
