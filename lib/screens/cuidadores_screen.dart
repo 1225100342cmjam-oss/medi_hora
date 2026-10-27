@@ -1,64 +1,178 @@
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 import '../app_state.dart';
 import '../theme.dart';
 import 'new_cuidador_screen.dart';
 import 'ui.dart';
 
-/// Pantalla "Cuidador" (lista de cuidadores del paciente).
+/// Pantalla de cuidadores registrados por el paciente.
 class CuidadoresScreen extends StatelessWidget {
   const CuidadoresScreen({super.key});
 
+  Future<void> _confirmarEliminacion(
+    BuildContext context,
+    dynamic cuidador,
+  ) async {
+    final confirmar = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: const Text('Eliminar cuidador'),
+        content: Text(
+          '¿Seguro que deseas eliminar a ${cuidador.nombre}?',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext, false),
+            child: const Text('Cancelar'),
+          ),
+          FilledButton(
+            style: FilledButton.styleFrom(
+              backgroundColor: kRojo,
+              foregroundColor: Colors.white,
+            ),
+            onPressed: () => Navigator.pop(dialogContext, true),
+            child: const Text('Eliminar'),
+          ),
+        ],
+      ),
+    );
+
+    if (confirmar == true && context.mounted) {
+      context.read<AppState>().deleteCuidador(cuidador);
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Cuidador eliminado correctamente'),
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    final lista = context.watch<AppState>().misCuidadores;
+    final app = context.watch<AppState>();
+    final lista = app.misCuidadores;
+
     return RedPage(
       title: 'Cuidadores',
       fab: BigFab(
-        onPressed: () => Navigator.push(
-            context, MaterialPageRoute(builder: (_) => const NewCuidadorScreen())),
+        onPressed: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (_) => const NewCuidadorScreen(),
+            ),
+          );
+        },
       ),
       child: PinkCard(
         child: lista.isEmpty
-            ? const EmptyText('No hay elementos.\nToca "+" para agregar un cuidador.')
-            : ListView.builder(
+            ? const Center(
+                child: Padding(
+                  padding: EdgeInsets.all(24),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(
+                        Icons.people_outline,
+                        size: 48,
+                        color: kVerde,
+                      ),
+                      SizedBox(height: 12),
+                      CardHeader('Mis cuidadores'),
+                      SizedBox(height: 8),
+                      Text(
+                        'Todavía no tienes cuidadores registrados.\n'
+                        'Toca el botón + para agregar uno.',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          color: kTextoSecundario,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              )
+            : ListView.separated(
+                padding: const EdgeInsets.symmetric(vertical: 8),
                 itemCount: lista.length,
-                itemBuilder: (_, i) {
-                  final c = lista[i];
-                  return Dismissible(
-                    key: ValueKey(c.id),
-                    direction: DismissDirection.endToStart,
-                    background: Container(
-                      alignment: Alignment.centerRight,
-                      padding: const EdgeInsets.only(right: 16),
-                      color: Colors.red.shade300,
-                      child: const Icon(Icons.delete, color: Colors.white),
+                separatorBuilder: (_, __) => const Divider(
+                  height: 1,
+                  color: Colors.black12,
+                ),
+                itemBuilder: (context, index) {
+                  final cuidador = lista[index];
+
+                  return ListTile(
+                    contentPadding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 4,
                     ),
-                    onDismissed: (_) => context.read<AppState>().deleteCuidador(c),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8),
-                      child: Row(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                        InkWell(
-                          onTap: () => Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (_) => NewCuidadorScreen(cuidador: c))),
-                          child: const Padding(
-                            padding: EdgeInsets.only(top: 2),
-                            child: Icon(Icons.edit_outlined, size: 22, color: kTinta),
+                    leading: const CircleAvatar(
+                      backgroundColor: kVerdeClaro,
+                      child: Icon(
+                        Icons.person_outline,
+                        color: kVerde,
+                      ),
+                    ),
+                    title: Text(
+                      cuidador.nombre,
+                      style: const TextStyle(
+                        fontWeight: FontWeight.w600,
+                        color: kTinta,
+                      ),
+                    ),
+                    subtitle: Padding(
+                      padding: const EdgeInsets.only(top: 4),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('Parentesco: ${cuidador.parentesco}'),
+                          const SizedBox(height: 2),
+                          Text('Contacto: ${cuidador.contacto}'),
+                        ],
+                      ),
+                    ),
+                    isThreeLine: true,
+                    trailing: PopupMenuButton<String>(
+                      tooltip: 'Opciones del cuidador',
+                      onSelected: (opcion) {
+                        if (opcion == 'editar') {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => NewCuidadorScreen(
+                                cuidador: cuidador,
+                              ),
+                            ),
+                          );
+                        } else if (opcion == 'eliminar') {
+                          _confirmarEliminacion(context, cuidador);
+                        }
+                      },
+                      itemBuilder: (_) => const [
+                        PopupMenuItem(
+                          value: 'editar',
+                          child: Row(
+                            children: [
+                              Icon(Icons.edit_outlined),
+                              SizedBox(width: 8),
+                              Text('Editar'),
+                            ],
                           ),
                         ),
-                        const SizedBox(width: 10),
-                        Expanded(
-                          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-                            Text(c.nombre, style: const TextStyle(fontSize: 15)),
-                            Text(c.parentesco,
-                                style: TextStyle(fontSize: 13, color: Colors.grey.shade700)),
-                            Text(c.contacto,
-                                style: TextStyle(fontSize: 12, color: Colors.grey.shade600)),
-                          ]),
+                        PopupMenuItem(
+                          value: 'eliminar',
+                          child: Row(
+                            children: [
+                              Icon(Icons.delete_outline, color: kRojo),
+                              SizedBox(width: 8),
+                              Text('Eliminar'),
+                            ],
+                          ),
                         ),
-                      ]),
+                      ],
                     ),
                   );
                 },

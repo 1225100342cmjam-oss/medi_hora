@@ -1,16 +1,26 @@
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import '../app_state.dart';
-import 'login_screen.dart';
-import 'home_screen.dart';
 
-/// Decide qué mostrar según la sesión (persistida).
+import '../app_state.dart';
+import 'home_screen.dart';
+import 'login_screen.dart';
+
+/// Decide qué pantalla mostrar según la sesión guardada.
 class AuthGate extends StatelessWidget {
   const AuthGate({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final user = context.watch<AppState>().current;
-    return user == null ? const LoginScreen() : const HomeScreen();
+    final app = context.watch<AppState>();
+    final usuario = app.current;
+
+    if (usuario == null) {
+      return const LoginScreen();
+    }
+
+    return const HomeScreen();
   }
 }
+
+

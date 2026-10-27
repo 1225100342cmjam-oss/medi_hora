@@ -179,19 +179,30 @@ class AppState extends ChangeNotifier {
   }
 
   /// Marca la toma de hoy y devuelve la racha actual.
-  int marcarTomado(Medicamento m) {
-    tomas.add(Toma(
-      id: _id(),
-      medId: m.id,
-      nombre: m.nombre,
-      dosis: m.dosis,
-      pacienteEmail: m.pacienteEmail,
-      fecha: DateTime.now(),
-    ));
+  
+/// Marca el medicamento como tomado una sola vez al día.
+/// Si ya existe una toma, no crea otro registro.
+int marcarTomado(Medicamento m) {
+  if (tomadoHoy(m)) {
     snoozeUntil.remove(m.id);
-    _changed();
     return racha(m.pacienteEmail);
   }
+
+  tomas.add(Toma(
+    id: _id(),
+    medId: m.id,
+    nombre: m.nombre,
+    dosis: m.dosis,
+    pacienteEmail: m.pacienteEmail,
+    fecha: DateTime.now(),
+  ));
+
+  snoozeUntil.remove(m.id);
+  _changed();
+
+  return racha(m.pacienteEmail);
+}
+
 
   void desmarcar(Medicamento m) {
     final now = DateTime.now();

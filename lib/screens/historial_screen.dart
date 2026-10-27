@@ -1,136 +1,294 @@
-import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+
 import '../app_state.dart';
 import '../models.dart';
 import '../theme.dart';
-import 'ui.dart';
 
-/// Pantalla "Historial": selector de fecha + tomas del día + gráfica.
 class HistorialScreen extends StatefulWidget {
   const HistorialScreen({super.key});
+
   @override
   State<HistorialScreen> createState() => _HistorialScreenState();
 }
 
 class _HistorialScreenState extends State<HistorialScreen> {
-  DateTime _fecha = DateTime.now();
+  DateTime fechaSeleccionada = DateTime.now();
 
-  Future<void> _pickFecha() async {
-    final d = await showDatePicker(
-      context: context,
-      initialDate: _fecha,
-      firstDate: DateTime(2020),
-      lastDate: DateTime.now(),
-    );
-    if (d != null) setState(() => _fecha = d);
+  bool mismoDia(DateTime a, DateTime b) {
+    return a.year == b.year &&
+        a.month == b.month &&
+        a.day == b.day;
+  }
+
+  String fechaCompleta(DateTime fecha) {
+    const dias = [
+      'lunes', 'martes', 'miércoles', 'jueves',
+      'viernes', 'sábado', 'domingo'
+    ];
+
+    const meses = [
+      'enero', 'febrero', 'marzo', 'abril',
+      'mayo', 'junio', 'julio', 'agosto',
+      'septiembre', 'octubre', 'noviembre', 'diciembre'
+    ];
+
+    return '${dias[fecha.weekday - 1]} ${fecha.day} '
+        'de ${meses[fecha.month - 1]} de ${fecha.year}';
+  }
+
+  String horaFormato(DateTime fecha) {
+    final hora = fecha.hour.toString().padLeft(2, '0');
+    final minuto = fecha.minute.toString().padLeft(2, '0');
+    return '$hora:$minuto';
   }
 
   @override
   Widget build(BuildContext context) {
-    final s = context.watch<AppState>();
-    final tomas = s.tomasDelDia(_fecha);
-    final datos = s.conteoUltimosDias(14);
-    final verPaciente = s.current!.rol != Rol.paciente;
+    final app = context.watch<AppState>();
 
-    return RedPage(
-      title: 'Historial',
-      child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-        InkWell(
-          onTap: _pickFecha,
-          child: InputDecorator(
-            decoration: const InputDecoration(
-              labelText: 'Fecha',
-              suffixIcon: Icon(Icons.calendar_today_outlined),
-            ),
-            child: Text(fmtFecha(_fecha)),
-          ),
-        ),
-        const SizedBox(height: 14),
-        Expanded(
-          child: PinkCard(
-            child: tomas.isEmpty
-                ? const EmptyText('No hay elementos.\nSin tomas registradas este día.')
-                : ListView.builder(
-                    itemCount: tomas.length,
-                    itemBuilder: (_, i) {
-                      final t = tomas[i];
-                      return ListTile(
-                        contentPadding: EdgeInsets.zero,
-                        dense: true,
-                        leading: const Icon(Icons.check_circle, color: kVerde),
-                        title: Text('${t.nombre} · ${t.dosis}'),
-                        subtitle: Text(verPaciente
-                            ? '${s.nombreDe(t.pacienteEmail)} · ${fmtHoraDt(t.fecha)}'
-                            : fmtHoraDt(t.fecha)),
-                      );
-                    },
+    final tomas = app
+        .tomasDelDia(fechaSeleccionada)
+        .reversed
+        .toList();
+
+    return Scaffold(
+      backgroundColor: kFondo,
+      appBar: AppBar(
+        title: const Text('Historial de tomas'),
+        backgroundColor: kVerde,
+        foregroundColor: kBlanco,
+        elevation: 0,
+      ),
+      body: SafeArea(
+        child: ListView(
+          padding: const EdgeInsets.all(16),
+          children: [
+            Container(
+              padding: const EdgeInsets.all(18),
+              decoration: BoxDecoration(
+                color: kVerde,
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Icon(
+                    Icons.history_rounded,
+                    color: kBlanco,
+                    size: 32,
                   ),
+                  const SizedBox(height: 12),
+                  const Text(
+                    'Tus tomas registradas',
+                    style: TextStyle(
+                      color: kBlanco,
+                      fontSize: 21,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 6),
+                  Text(
+                    '${tomas.length} ${tomas.length == 1 ? 'toma registrada' : 'tomas registradas'}',
+                    style: const TextStyle(
+                      color: kBlanco,
+                      fontSize: 15,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+
+            const SizedBox(height: 20),
+
+            const Text(
+              'Selecciona una fecha',
+              style: TextStyle(
+                color: kOscuro,
+                fontSize: 17,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+
+            const SizedBox(height: 10),
+
+            Container(
+              decoration: BoxDecoration(
+                color: kBlanco,
+                borderRadius: BorderRadius.circular(16),
+              ),
+              child: ListTile(
+                leading: const Icon(
+                  Icons.calendar_month_rounded,
+                  color: kVerde,
+                  size: 30,
+                ),
+                title: Text(
+                  fechaCompleta(fechaSeleccionada),
+                  style: const TextStyle(
+                    color: kOscuro,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+                subtitle: const Text('Toca para cambiar el día'),
+                trailing: const Icon(Icons.chevron_right),
+                onTap: () async {
+                  final elegida = await showDatePicker(
+                    context: context,
+                    initialDate: fechaSeleccionada,
+                    firstDate: DateTime(2020),
+                    lastDate: DateTime.now(),
+                    locale: const Locale('es', 'MX'),
+                  );
+
+                  if (elegida != null && mounted) {
+                    setState(() {
+                      fechaSeleccionada = elegida;
+                    });
+                  }
+                },
+              ),
+            ),
+
+            const SizedBox(height: 22),
+
+            Row(
+              children: [
+                const Expanded(
+                  child: Text(
+                    'Registro del día',
+                    style: TextStyle(
+                      color: kOscuro,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                TextButton.icon(
+                  onPressed: () {
+                    setState(() {
+                      fechaSeleccionada = DateTime.now();
+                    });
+                  },
+                  icon: const Icon(Icons.today_rounded),
+                  label: const Text('Hoy'),
+                ),
+              ],
+            ),
+
+            const SizedBox(height: 8),
+
+            if (tomas.isEmpty)
+              Container(
+                padding: const EdgeInsets.all(24),
+                decoration: BoxDecoration(
+                  color: kBlanco,
+                  borderRadius: BorderRadius.circular(18),
+                ),
+                child: const Column(
+                  children: [
+                    Icon(
+                      Icons.medication_outlined,
+                      size: 48,
+                      color: kTextoSecundario,
+                    ),
+                    SizedBox(height: 12),
+                    Text(
+                      'Sin tomas registradas',
+                      style: TextStyle(
+                        color: kOscuro,
+                        fontSize: 17,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    SizedBox(height: 8),
+                    Text(
+                      'No hay medicamentos confirmados en esta fecha.',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(color: kTextoSecundario),
+                    ),
+                  ],
+                ),
+              )
+            else
+              ...tomas.map((toma) => _tarjetaToma(toma)),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _tarjetaToma(Toma toma) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 12),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: kBlanco,
+        borderRadius: BorderRadius.circular(16),
+        border: Border.all(color: kVerdeClaro),
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: BoxDecoration(
+              color: kVerdeClaro,
+              borderRadius: BorderRadius.circular(14),
+            ),
+            child: const Icon(
+              Icons.medication_rounded,
+              color: kVerde,
+              size: 28,
+            ),
           ),
-        ),
-        const SizedBox(height: 14),
-        Row(mainAxisAlignment: MainAxisAlignment.spaceBetween, children: const [
-          Text('▫ TOMAS',
-              style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 13)),
-          Text('Últimos 14 días', style: TextStyle(color: Colors.white, fontSize: 13)),
-        ]),
-        const SizedBox(height: 6),
-        SizedBox(
-          height: 60,
-          width: double.infinity,
-          child: CustomPaint(painter: _SparkPainter(datos)),
-        ),
-        const SizedBox(height: 10),
-      ]),
+          const SizedBox(width: 12),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  toma.nombre,
+                  style: const TextStyle(
+                    color: kOscuro,
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 5),
+                Text(
+                  'Dosis: ${toma.dosis}',
+                  style: const TextStyle(color: kTextoSecundario),
+                ),
+                const SizedBox(height: 8),
+                Row(
+                  children: [
+                    const Icon(
+                      Icons.access_time_rounded,
+                      color: kVerde,
+                      size: 17,
+                    ),
+                    const SizedBox(width: 5),
+                    Text(
+                      horaFormato(toma.fecha),
+                      style: const TextStyle(
+                        color: kVerde,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          const Icon(
+            Icons.check_circle_rounded,
+            color: kVerde,
+            size: 24,
+          ),
+        ],
+      ),
     );
   }
-}
-
-class _SparkPainter extends CustomPainter {
-  final List<int> v;
-  _SparkPainter(this.v);
-
-  @override
-  void paint(Canvas canvas, Size size) {
-    final maxV = max(1, v.reduce(max)).toDouble();
-    final h = size.height - 6;
-    final pts = [
-      for (var i = 0; i < v.length; i++)
-        Offset(size.width * i / (v.length - 1), h - (v[i] / maxV) * (h - 8)),
-    ];
-    final line = Path()..moveTo(pts.first.dx, pts.first.dy);
-    for (final p in pts.skip(1)) {
-      line.lineTo(p.dx, p.dy);
-    }
-    final fill = Path.from(line)
-      ..lineTo(size.width, h)
-      ..lineTo(0, h)
-      ..close();
-    canvas.drawPath(
-      fill,
-      Paint()
-        ..shader = LinearGradient(
-          begin: Alignment.topCenter,
-          end: Alignment.bottomCenter,
-          colors: [Colors.white.withAlpha(110), Colors.white.withAlpha(0)],
-        ).createShader(Offset.zero & size),
-    );
-    canvas.drawPath(
-      line,
-      Paint()
-        ..color = Colors.white
-        ..style = PaintingStyle.stroke
-        ..strokeWidth = 1.6,
-    );
-    // línea base punteada
-    final base = Paint()
-      ..color = Colors.white
-      ..strokeWidth = 1.2;
-    for (double x = 0; x < size.width; x += 6) {
-      canvas.drawLine(Offset(x, h + 2), Offset(x + 3, h + 2), base);
-    }
-  }
-
-  @override
-  bool shouldRepaint(covariant _SparkPainter old) => old.v != v;
 }
