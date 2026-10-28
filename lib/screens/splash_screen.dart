@@ -84,7 +84,7 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: kVerde,
+      backgroundColor: kPrimario,
       body: Stack(
         children: [
           // Fondo decorativo
@@ -118,7 +118,7 @@ class _SplashScreenState extends State<SplashScreen>
                     height: 190,
                     padding: const EdgeInsets.all(18),
                     decoration: BoxDecoration(
-                      color: kBlanco.withValues(alpha: 0.96),
+                      color: kPrimarioOscuro,
                       borderRadius: BorderRadius.circular(48),
                       boxShadow: [
                         BoxShadow(
@@ -135,7 +135,7 @@ class _SplashScreenState extends State<SplashScreen>
                         return const Icon(
                           Icons.medication_rounded,
                           size: 110,
-                          color: kVerde,
+                          color: kPrimario,
                         );
                       },
                     ),
@@ -205,7 +205,7 @@ class _FondoPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final pintura = Paint()
-      ..color = kVerdeOscuro.withValues(alpha: 0.55);
+      ..color = kPrimarioOscuro.withValues(alpha: 0.55);
 
     // Curva inferior
     final inferior = Path()
@@ -228,7 +228,7 @@ class _FondoPainter extends CustomPainter {
     canvas.drawCircle(
       Offset(size.width * 0.94, size.height * 0.12),
       size.width * 0.30,
-      Paint()..color = kVerdeClaro.withValues(alpha: 0.12),
+      Paint()..color = kPrimarioClaro.withValues(alpha: 0.12),
     );
 
     // Círculo decorativo lateral

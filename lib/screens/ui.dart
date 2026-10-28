@@ -36,7 +36,7 @@ class RedPage extends StatelessWidget {
                     child: Text(
                       title ?? '',
                       style: tema.textTheme.headlineSmall?.copyWith(
-                        color: kVerdeOscuro,
+                        color: kPrimarioOscuro,
                         fontSize: 25,
                         fontWeight: FontWeight.bold,
                       ),
@@ -93,7 +93,7 @@ class PinkCard extends StatelessWidget {
         color: Colors.white,
         borderRadius: BorderRadius.circular(18),
         border: Border.all(
-          color: const Color(0xFFDCE7E1),
+          color: const Color(0xFFD3E2F3),
         ),
         boxShadow: [
           BoxShadow(
@@ -129,7 +129,7 @@ class CardHeader extends StatelessWidget {
         ),
         const SizedBox(height: 10),
         const Divider(
-          color: Color(0xFFDCE7E1),
+          color: Color(0xFFD3E2F3),
           height: 1,
         ),
       ],
@@ -154,13 +154,13 @@ class EmptyText extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(18),
               decoration: const BoxDecoration(
-                color: kVerdeClaro,
+                color: kPrimarioClaro,
                 shape: BoxShape.circle,
               ),
               child: const Icon(
                 Icons.medication_outlined,
                 size: 42,
-                color: kVerde,
+                color: kPrimario,
               ),
             ),
             const SizedBox(height: 16),
@@ -199,7 +199,7 @@ class DarkButton extends StatelessWidget {
       child: ElevatedButton(
         onPressed: onPressed,
         style: ElevatedButton.styleFrom(
-          backgroundColor: kVerde,
+          backgroundColor: kPrimario,
           foregroundColor: Colors.white,
           elevation: 0,
           minimumSize: const Size(48, 52),
@@ -238,11 +238,11 @@ class PinkButton extends StatelessWidget {
       child: OutlinedButton(
         onPressed: onPressed,
         style: OutlinedButton.styleFrom(
-          foregroundColor: kVerdeOscuro,
+          foregroundColor: kPrimarioOscuro,
           backgroundColor: Colors.white,
           minimumSize: const Size(48, 52),
           side: const BorderSide(
-            color: kVerde,
+            color: kPrimario,
             width: 1.5,
           ),
           shape: RoundedRectangleBorder(
@@ -325,19 +325,19 @@ class LabeledField extends StatelessWidget {
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(13),
                 borderSide: const BorderSide(
-                  color: Color(0xFFB8CBC2),
+                  color: Color(0xFFB5CAE2),
                 ),
               ),
               enabledBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(13),
                 borderSide: const BorderSide(
-                  color: Color(0xFFB8CBC2),
+                  color: Color(0xFFB5CAE2),
                 ),
               ),
               focusedBorder: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(13),
                 borderSide: const BorderSide(
-                  color: kVerde,
+                  color: kPrimario,
                   width: 2,
                 ),
               ),
@@ -416,7 +416,7 @@ class BigFab extends StatelessWidget {
       child: FloatingActionButton(
         heroTag: null,
         elevation: 3,
-        backgroundColor: kVerde,
+        backgroundColor: kPrimario,
         foregroundColor: Colors.white,
         tooltip: 'Agregar medicamento',
         shape: RoundedRectangleBorder(

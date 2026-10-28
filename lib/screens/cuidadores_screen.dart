@@ -77,7 +77,7 @@ class CuidadoresScreen extends StatelessWidget {
                       Icon(
                         Icons.people_outline,
                         size: 48,
-                        color: kVerde,
+                        color: kPrimario,
                       ),
                       SizedBox(height: 12),
                       CardHeader('Mis cuidadores'),
@@ -110,10 +110,10 @@ class CuidadoresScreen extends StatelessWidget {
                       vertical: 4,
                     ),
                     leading: const CircleAvatar(
-                      backgroundColor: kVerdeClaro,
+                      backgroundColor: kPrimarioClaro,
                       child: Icon(
                         Icons.person_outline,
-                        color: kVerde,
+                        color: kPrimario,
                       ),
                     ),
                     title: Text(

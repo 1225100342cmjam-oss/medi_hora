@@ -96,12 +96,12 @@ class _RachaScreenState extends State<RachaScreen> {
                     width: 54,
                     height: 54,
                     decoration: BoxDecoration(
-                      color: kVerdeClaro,
+                      color: kPrimarioClaro,
                       borderRadius: BorderRadius.circular(17),
                     ),
                     child: const Icon(
                       Icons.local_fire_department_rounded,
-                      color: kVerde,
+                      color: kPrimario,
                       size: 32,
                     ),
                   ),
@@ -140,7 +140,7 @@ class _RachaScreenState extends State<RachaScreen> {
                 padding: const EdgeInsets.all(22),
                 decoration: BoxDecoration(
                   gradient: const LinearGradient(
-                    colors: [kVerde, kVerdeOscuro],
+                    colors: [kPrimario, kPrimarioOscuro],
                     begin: Alignment.topLeft,
                     end: Alignment.bottomRight,
                   ),
@@ -206,7 +206,7 @@ class _RachaScreenState extends State<RachaScreen> {
                         backgroundColor: Colors.white24,
                         valueColor:
                             const AlwaysStoppedAnimation<Color>(
-                          Color(0xFFB9F2D3),
+                          Color(0xFFBBDEFB),
                         ),
                       ),
                     ),
@@ -236,7 +236,7 @@ class _RachaScreenState extends State<RachaScreen> {
                   color: kBlanco,
                   borderRadius: BorderRadius.circular(23),
                   border: Border.all(
-                    color: kVerdeClaro,
+                    color: kPrimarioClaro,
                   ),
                 ),
                 child: Column(
@@ -245,7 +245,7 @@ class _RachaScreenState extends State<RachaScreen> {
                       children: [
                         const Icon(
                           Icons.calendar_month_rounded,
-                          color: kVerde,
+                          color: kPrimario,
                           size: 26,
                         ),
                         const SizedBox(width: 10),
@@ -264,7 +264,7 @@ class _RachaScreenState extends State<RachaScreen> {
                           onPressed: () => _cambiarMes(-1),
                           icon: const Icon(
                             Icons.chevron_left_rounded,
-                            color: kVerde,
+                            color: kPrimario,
                             size: 30,
                           ),
                         ),
@@ -288,7 +288,7 @@ class _RachaScreenState extends State<RachaScreen> {
                             color: _mesActual.year == hoy.year &&
                                     _mesActual.month == hoy.month
                                 ? Colors.grey.shade400
-                                : kVerde,
+                                : kPrimario,
                             size: 30,
                           ),
                         ),
@@ -363,13 +363,13 @@ class _RachaScreenState extends State<RachaScreen> {
                             child: Container(
                               decoration: BoxDecoration(
                                 color: seleccionado
-                                    ? kVerde
+                                    ? kPrimario
                                     : esFechaActual
-                                        ? kVerdeClaro
+                                        ? kPrimarioClaro
                                         : Colors.transparent,
                                 borderRadius: BorderRadius.circular(14),
                                 border: esFechaActual && !seleccionado
-                                    ? Border.all(color: kVerde)
+                                    ? Border.all(color: kPrimario)
                                     : null,
                               ),
                               child: Column(
@@ -399,7 +399,7 @@ class _RachaScreenState extends State<RachaScreen> {
                                       decoration: BoxDecoration(
                                         color: seleccionado
                                             ? Colors.white
-                                            : kVerde,
+                                            : kPrimario,
                                         shape: BoxShape.circle,
                                       ),
                                     )
@@ -415,7 +415,7 @@ class _RachaScreenState extends State<RachaScreen> {
 
                     const SizedBox(height: 16),
 
-                    const Divider(color: kVerdeClaro),
+                    const Divider(color: kPrimarioClaro),
 
                     const SizedBox(height: 8),
 
@@ -425,7 +425,7 @@ class _RachaScreenState extends State<RachaScreen> {
                           width: 13,
                           height: 13,
                           decoration: const BoxDecoration(
-                            color: kVerde,
+                            color: kPrimario,
                             shape: BoxShape.circle,
                           ),
                         ),
@@ -443,8 +443,8 @@ class _RachaScreenState extends State<RachaScreen> {
                           width: 13,
                           height: 13,
                           decoration: BoxDecoration(
-                            color: kVerdeClaro,
-                            border: Border.all(color: kVerde),
+                            color: kPrimarioClaro,
+                            border: Border.all(color: kPrimario),
                             shape: BoxShape.circle,
                           ),
                         ),
@@ -473,7 +473,7 @@ class _RachaScreenState extends State<RachaScreen> {
                 decoration: BoxDecoration(
                   color: kBlanco,
                   borderRadius: BorderRadius.circular(22),
-                  border: Border.all(color: kVerdeClaro),
+                  border: Border.all(color: kPrimarioClaro),
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -503,7 +503,7 @@ class _RachaScreenState extends State<RachaScreen> {
                         children: [
                           const Icon(
                             Icons.check_circle_outline_rounded,
-                            color: kVerde,
+                            color: kPrimario,
                             size: 25,
                           ),
                           const SizedBox(width: 10),
@@ -522,7 +522,7 @@ class _RachaScreenState extends State<RachaScreen> {
                     ] else if (esHoy) ...[
                       const Icon(
                         Icons.medication_outlined,
-                        color: kVerde,
+                        color: kPrimario,
                         size: 34,
                       ),
                       const SizedBox(height: 8),
@@ -536,7 +536,7 @@ class _RachaScreenState extends State<RachaScreen> {
                     ] else ...[
                       const Icon(
                         Icons.history_rounded,
-                        color: kVerde,
+                        color: kPrimario,
                         size: 34,
                       ),
                       const SizedBox(height: 8),
@@ -560,7 +560,7 @@ class _RachaScreenState extends State<RachaScreen> {
                 width: double.infinity,
                 padding: const EdgeInsets.all(18),
                 decoration: BoxDecoration(
-                  color: kVerdeClaro,
+                  color: kPrimarioClaro,
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: const Row(
@@ -568,7 +568,7 @@ class _RachaScreenState extends State<RachaScreen> {
                   children: [
                     Icon(
                       Icons.tips_and_updates_outlined,
-                      color: kVerdeOscuro,
+                      color: kPrimarioOscuro,
                       size: 28,
                     ),
                     SizedBox(width: 12),
@@ -579,7 +579,7 @@ class _RachaScreenState extends State<RachaScreen> {
                           Text(
                             'Un día a la vez',
                             style: TextStyle(
-                              color: kVerdeOscuro,
+                              color: kPrimarioOscuro,
                               fontSize: 17,
                               fontWeight: FontWeight.bold,
                             ),

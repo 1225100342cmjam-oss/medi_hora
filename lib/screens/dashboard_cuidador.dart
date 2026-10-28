@@ -41,10 +41,10 @@ class DashboardCuidador extends StatelessWidget {
                       return ListTile(
                         contentPadding: EdgeInsets.zero,
                         leading: const CircleAvatar(
-                          backgroundColor: kVerdeClaro,
+                          backgroundColor: kPrimarioClaro,
                           child: Icon(
                             Icons.person_outline,
-                            color: kVerde,
+                            color: kPrimario,
                           ),
                         ),
                         title: Text(
@@ -65,7 +65,7 @@ class DashboardCuidador extends StatelessWidget {
                                   ? 'Al día'
                                   : 'Pendiente',
                               color: pendientes == 0
-                                  ? kVerde
+                                  ? kPrimario
                                   : kNaranja,
                             ),
                             const SizedBox(width: 4),

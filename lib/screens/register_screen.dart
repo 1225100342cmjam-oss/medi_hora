@@ -132,14 +132,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       const Spacer(),
                       const Icon(
                         Icons.health_and_safety_rounded,
-                        color: kVerde,
+                        color: kPrimario,
                         size: 34,
                       ),
                       const SizedBox(width: 8),
                       Text(
                         'MediHora',
                         style: tema.textTheme.titleLarge?.copyWith(
-                          color: kVerdeOscuro,
+                          color: kPrimarioOscuro,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -151,7 +151,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   Container(
                     padding: const EdgeInsets.all(22),
                     decoration: BoxDecoration(
-                      color: kVerdeClaro,
+                      color: kPrimarioClaro,
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: Row(
@@ -163,7 +163,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                               Text(
                                 'Crea tu cuenta',
                                 style: tema.textTheme.headlineSmall?.copyWith(
-                                  color: kVerdeOscuro,
+                                  color: kPrimarioOscuro,
                                   fontSize: 27,
                                   fontWeight: FontWeight.bold,
                                 ),
@@ -184,7 +184,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                         const SizedBox(width: 10),
                         const Icon(
                           Icons.medication_rounded,
-                          color: kVerde,
+                          color: kPrimario,
                           size: 46,
                         ),
                       ],
@@ -200,7 +200,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       color: Colors.white,
                       borderRadius: BorderRadius.circular(22),
                       border: Border.all(
-                        color: const Color(0xFFDCE7E1),
+                        color: const Color(0xFFD3E2F3),
                       ),
                       boxShadow: [
                         BoxShadow(
@@ -450,10 +450,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             child: FilledButton.icon(
                               onPressed: _cargando ? null : _registrar,
                               style: FilledButton.styleFrom(
-                                backgroundColor: kVerde,
+                                backgroundColor: kPrimario,
                                 foregroundColor: Colors.white,
                                 disabledBackgroundColor:
-                                    kVerde.withValues(alpha: 0.6),
+                                    kPrimario.withValues(alpha: 0.6),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(14),
                                 ),
@@ -545,7 +545,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       hintText: hint,
       prefixIcon: Icon(
         icono,
-        color: kVerde,
+        color: kPrimario,
         size: 25,
       ),
       suffixIcon: sufijo,
@@ -558,19 +558,19 @@ class _RegisterScreenState extends State<RegisterScreen> {
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(13),
         borderSide: const BorderSide(
-          color: Color(0xFFB8CBC2),
+          color: Color(0xFFB5CAE2),
         ),
       ),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(13),
         borderSide: const BorderSide(
-          color: Color(0xFFB8CBC2),
+          color: Color(0xFFB5CAE2),
         ),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(13),
         borderSide: const BorderSide(
-          color: kVerde,
+          color: kPrimario,
           width: 2,
         ),
       ),
@@ -585,7 +585,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
       button: true,
       label: '${rol.label}. ${_descripcionRol(rol)}',
       child: Material(
-        color: seleccionado ? kVerdeClaro : Colors.white,
+        color: seleccionado ? kPrimarioClaro : Colors.white,
         borderRadius: BorderRadius.circular(15),
         child: InkWell(
           borderRadius: BorderRadius.circular(15),
@@ -602,8 +602,8 @@ class _RegisterScreenState extends State<RegisterScreen> {
               borderRadius: BorderRadius.circular(15),
               border: Border.all(
                 color: seleccionado
-                    ? kVerde
-                    : const Color(0xFFDCE7E1),
+                    ? kPrimario
+                    : const Color(0xFFD3E2F3),
                 width: seleccionado ? 2 : 1,
               ),
             ),
@@ -613,7 +613,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   width: 48,
                   height: 48,
                   decoration: BoxDecoration(
-                    color: seleccionado ? kVerde : kFondo,
+                    color: seleccionado ? kPrimario : kFondo,
                     borderRadius: BorderRadius.circular(13),
                   ),
                   child: Icon(
@@ -652,7 +652,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                   seleccionado
                       ? Icons.radio_button_checked_rounded
                       : Icons.radio_button_off_rounded,
-                  color: seleccionado ? kVerde : kTextoSecundario,
+                  color: seleccionado ? kPrimario : kTextoSecundario,
                   size: 25,
                 ),
               ],

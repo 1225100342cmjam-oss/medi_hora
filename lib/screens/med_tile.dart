@@ -141,7 +141,7 @@ class MedTile extends StatelessWidget {
           color: kBlanco,
           borderRadius: BorderRadius.circular(18),
           border: Border.all(
-            color: tomado ? kVerdeClaro : Colors.grey.shade200,
+            color: tomado ? kPrimarioClaro : Colors.grey.shade200,
           ),
         ),
         child: Row(
@@ -152,12 +152,12 @@ class MedTile extends StatelessWidget {
               width: 48,
               height: 48,
               decoration: BoxDecoration(
-                color: kVerdeClaro,
+                color: kPrimarioClaro,
                 borderRadius: BorderRadius.circular(15),
               ),
               child: const Icon(
                 Icons.medication_rounded,
-                color: kVerde,
+                color: kPrimario,
                 size: 27,
               ),
             ),
@@ -198,14 +198,14 @@ class MedTile extends StatelessWidget {
                     children: [
                       const Icon(
                         Icons.access_time_rounded,
-                        color: kVerde,
+                        color: kPrimario,
                         size: 16,
                       ),
                       const SizedBox(width: 5),
                       Text(
                         _formatearHora(context, med.hora),
                         style: const TextStyle(
-                          color: kVerde,
+                          color: kPrimario,
                           fontSize: 13,
                           fontWeight: FontWeight.w600,
                         ),
@@ -250,9 +250,9 @@ class MedTile extends StatelessWidget {
                       OutlinedButton(
                         onPressed: () => _cambiarEstado(context, tomado),
                         style: OutlinedButton.styleFrom(
-                          foregroundColor: tomado ? kNaranja : kVerde,
+                          foregroundColor: tomado ? kNaranja : kPrimario,
                           side: BorderSide(
-                            color: tomado ? kNaranja : kVerde,
+                            color: tomado ? kNaranja : kPrimario,
                           ),
                           padding: const EdgeInsets.symmetric(
                             horizontal: 11,
@@ -356,8 +356,8 @@ class _EstadoMedicamento extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = tomado ? kVerde : kNaranja;
-    final fondo = tomado ? kVerdeClaro : const Color(0xFFFFF1DB);
+    final color = tomado ? kPrimario : kNaranja;
+    final fondo = tomado ? kPrimarioClaro : const Color(0xFFFFF1DB);
 
     return Container(
       padding: const EdgeInsets.symmetric(
@@ -413,14 +413,14 @@ class MedList extends StatelessWidget {
           decoration: BoxDecoration(
             color: kBlanco,
             borderRadius: BorderRadius.circular(20),
-            border: Border.all(color: kVerdeClaro),
+            border: Border.all(color: kPrimarioClaro),
           ),
           child: const Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               Icon(
                 Icons.medication_outlined,
-                color: kVerde,
+                color: kPrimario,
                 size: 48,
               ),
               SizedBox(height: 12),

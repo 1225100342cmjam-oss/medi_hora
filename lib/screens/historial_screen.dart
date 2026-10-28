@@ -57,7 +57,7 @@ class _HistorialScreenState extends State<HistorialScreen> {
       backgroundColor: kFondo,
       appBar: AppBar(
         title: const Text('Historial de tomas'),
-        backgroundColor: kVerde,
+        backgroundColor: kPrimario,
         foregroundColor: kBlanco,
         elevation: 0,
       ),
@@ -68,7 +68,7 @@ class _HistorialScreenState extends State<HistorialScreen> {
             Container(
               padding: const EdgeInsets.all(18),
               decoration: BoxDecoration(
-                color: kVerde,
+                color: kPrimario,
                 borderRadius: BorderRadius.circular(20),
               ),
               child: Column(
@@ -121,7 +121,7 @@ class _HistorialScreenState extends State<HistorialScreen> {
               child: ListTile(
                 leading: const Icon(
                   Icons.calendar_month_rounded,
-                  color: kVerde,
+                  color: kPrimario,
                   size: 30,
                 ),
                 title: Text(
@@ -226,7 +226,7 @@ class _HistorialScreenState extends State<HistorialScreen> {
       decoration: BoxDecoration(
         color: kBlanco,
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: kVerdeClaro),
+        border: Border.all(color: kPrimarioClaro),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -234,12 +234,12 @@ class _HistorialScreenState extends State<HistorialScreen> {
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: kVerdeClaro,
+              color: kPrimarioClaro,
               borderRadius: BorderRadius.circular(14),
             ),
             child: const Icon(
               Icons.medication_rounded,
-              color: kVerde,
+              color: kPrimario,
               size: 28,
             ),
           ),
@@ -266,14 +266,14 @@ class _HistorialScreenState extends State<HistorialScreen> {
                   children: [
                     const Icon(
                       Icons.access_time_rounded,
-                      color: kVerde,
+                      color: kPrimario,
                       size: 17,
                     ),
                     const SizedBox(width: 5),
                     Text(
                       horaFormato(toma.fecha),
                       style: const TextStyle(
-                        color: kVerde,
+                        color: kPrimario,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -284,7 +284,7 @@ class _HistorialScreenState extends State<HistorialScreen> {
           ),
           const Icon(
             Icons.check_circle_rounded,
-            color: kVerde,
+            color: kPrimario,
             size: 24,
           ),
         ],

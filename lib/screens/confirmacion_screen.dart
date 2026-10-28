@@ -31,7 +31,7 @@ class _ConfirmacionScreenState extends State<ConfirmacionScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: kRojo,
+      backgroundColor: kPrimario,
       body: GestureDetector(
         behavior: HitTestBehavior.opaque,
         onTap: () => Navigator.maybePop(context),
@@ -40,25 +40,25 @@ class _ConfirmacionScreenState extends State<ConfirmacionScreen> {
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 40),
               child: Column(mainAxisSize: MainAxisSize.min, children: [
-                const Icon(Icons.check_circle_outline, size: 190, color: kTinta),
+                const Icon(Icons.check_circle_outline, size: 190, color: kBlanco),
                 const SizedBox(height: 24),
-                Text('Confirmación exitosa', textAlign: TextAlign.center, style: slab(22)),
+                Text('Confirmación exitosa', textAlign: TextAlign.center, style: slab(22, color: kBlanco)),
                 const SizedBox(height: 28),
                 Text('Ya se ha registrado la actividad',
-                    textAlign: TextAlign.center, style: slab(16)),
+                    textAlign: TextAlign.center, style: slab(16, color: kBlanco)),
                 const SizedBox(height: 18),
                 Container(
                   width: double.infinity,
                   padding: const EdgeInsets.symmetric(vertical: 10),
                   decoration: BoxDecoration(
-                    color: kRosaBoton,
+                    color: kAzulSuave,
                     borderRadius: BorderRadius.circular(6),
-                    border: Border.all(color: const Color(0x55000000)),
+                    border: Border.all(color: const Color(0x331565C0)),
                   ),
                   child: Text(
                     'Racha de: ${widget.racha} ${widget.racha == 1 ? 'día' : 'días'}',
                     textAlign: TextAlign.center,
-                    style: const TextStyle(fontSize: 16),
+                    style: const TextStyle(fontSize: 16, color: kAzul, fontWeight: FontWeight.w600),
                   ),
                 ),
               ]),

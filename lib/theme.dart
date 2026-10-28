@@ -2,28 +2,25 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
-// Paleta de colores: MediTrack Salud
-const kVerde = Color(0xFF176B5B);
-const kVerdeOscuro = Color(0xFF115447);
-const kVerdeClaro = Color(0xFFDCEFE8);
+// Paleta de colores de MediHora: tonos azules.
+const kPrimario = Color(0xFF1565C0); // azul principal
+const kPrimarioOscuro = Color(0xFF0D47A1); // azul profundo
+const kPrimarioClaro = Color(0xFFDCEBFA); // azul muy claro (fondos de iconos/chips)
+const kAzulSuave = Color(0xFFE8F1FC); // azul suave para botones/tarjetas
 
-const kAzul = Color(0xFF164E63);
-const kFondo = Color(0xFFF4F8F6);
+const kAzul = Color(0xFF123E73); // azul marino para títulos
+const kFondo = Color(0xFFF2F7FD);
 const kBlanco = Color(0xFFFFFFFF);
 
-const kOscuro = Color(0xFF24332E);
-const kTinta = Color(0xFF24332E);
-const kTextoSecundario = Color(0xFF4B5D56);
+const kOscuro = Color(0xFF1B2A3D);
+const kTinta = Color(0xFF1B2A3D);
+const kTextoSecundario = Color(0xFF4A5B70);
 
+// Colores semánticos (advertencia / error): se conservan a propósito.
 const kNaranja = Color(0xFF8A4B08);
 const kRojo = Color(0xFFB42332);
 const kRojoOscuro = Color(0xFF8F1D29);
-const kRosa = Color(0xFFFCE8E9);
-const kRosaMenu = Color(0xFFF5E6E7);
-const kRosaBoton = Color(0xFFFCE8E9);
 
-// Tipografía de títulos.
-// Se usa una fuente sans serif para facilitar la lectura.
 TextStyle slab(
   double size, {
   Color color = kOscuro,
@@ -38,10 +35,10 @@ ThemeData buildTheme() {
   final base = ThemeData(
     useMaterial3: true,
     colorScheme: ColorScheme.fromSeed(
-      seedColor: kVerde,
+      seedColor: kPrimario,
       brightness: Brightness.light,
     ).copyWith(
-      primary: kVerde,
+      primary: kPrimario,
       onPrimary: kBlanco,
       secondary: kAzul,
       onSecondary: kBlanco,
@@ -103,7 +100,7 @@ ThemeData buildTheme() {
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(16),
         side: const BorderSide(
-          color: Color(0xFFDCE7E1),
+          color: Color(0xFFD3E2F3),
         ),
       ),
     ),
@@ -132,19 +129,19 @@ ThemeData buildTheme() {
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
         borderSide: const BorderSide(
-          color: Color(0xFFB8CBC2),
+          color: Color(0xFFB5CAE2),
         ),
       ),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
         borderSide: const BorderSide(
-          color: Color(0xFFB8CBC2),
+          color: Color(0xFFB5CAE2),
         ),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(12),
         borderSide: const BorderSide(
-          color: kVerde,
+          color: kPrimario,
           width: 2,
         ),
       ),
@@ -159,7 +156,7 @@ ThemeData buildTheme() {
 
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
-        backgroundColor: kVerde,
+        backgroundColor: kPrimario,
         foregroundColor: kBlanco,
         minimumSize: const Size(48, 52),
         padding: const EdgeInsets.symmetric(
@@ -178,10 +175,10 @@ ThemeData buildTheme() {
 
     outlinedButtonTheme: OutlinedButtonThemeData(
       style: OutlinedButton.styleFrom(
-        foregroundColor: kVerdeOscuro,
+        foregroundColor: kPrimarioOscuro,
         minimumSize: const Size(48, 52),
         side: const BorderSide(
-          color: kVerde,
+          color: kPrimario,
           width: 1.5,
         ),
         textStyle: const TextStyle(
@@ -196,18 +193,18 @@ ThemeData buildTheme() {
 
     navigationBarTheme: const NavigationBarThemeData(
       backgroundColor: kBlanco,
-      indicatorColor: kVerdeClaro,
+      indicatorColor: kPrimarioClaro,
       elevation: 2,
       labelTextStyle: WidgetStatePropertyAll(
         TextStyle(
-          fontSize: 14,
+          fontSize: 12,
           fontWeight: FontWeight.w600,
         ),
       ),
     ),
 
     dividerTheme: const DividerThemeData(
-      color: Color(0xFFDCE7E1),
+      color: Color(0xFFD3E2F3),
       thickness: 1,
       space: 24,
     ),

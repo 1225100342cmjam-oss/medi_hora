@@ -7,6 +7,7 @@ import '../app_state.dart';
 import '../models.dart';
 import '../theme.dart';
 import '../services/reporte_medico_service.dart';
+import 'cuidadores_screen.dart';
 import 'notificacion_screen.dart';
 
 class ConfiguracionScreen extends StatelessWidget {
@@ -113,23 +114,10 @@ class ConfiguracionScreen extends StatelessWidget {
     return Scaffold(
       backgroundColor: kFondo,
       appBar: AppBar(
-        backgroundColor: kFondo,
-        surfaceTintColor: Colors.transparent,
+        title: const Text('Configuración'),
+        backgroundColor: kPrimario,
+        foregroundColor: kBlanco,
         elevation: 0,
-        leading: IconButton(
-          onPressed: () => Navigator.maybePop(context),
-          icon: const Icon(Icons.arrow_back_rounded),
-          color: kOscuro,
-        ),
-        title: const Text(
-          'Configuración',
-          style: TextStyle(
-            color: kOscuro,
-            fontSize: 21,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        centerTitle: true,
       ),
       body: SafeArea(
         child: ListView(
@@ -141,7 +129,7 @@ class ConfiguracionScreen extends StatelessWidget {
               decoration: BoxDecoration(
                 color: kBlanco,
                 borderRadius: BorderRadius.circular(24),
-                border: Border.all(color: kVerdeClaro),
+                border: Border.all(color: kPrimarioClaro),
               ),
               child: Column(
                 children: [
@@ -149,13 +137,13 @@ class ConfiguracionScreen extends StatelessWidget {
                     width: 95,
                     height: 95,
                     decoration: const BoxDecoration(
-                      color: kVerdeClaro,
+                      color: kPrimarioClaro,
                       shape: BoxShape.circle,
                     ),
                     child: const Icon(
                       Icons.person_rounded,
                       size: 56,
-                      color: kVerde,
+                      color: kPrimario,
                     ),
                   ),
                   const SizedBox(height: 14),
@@ -175,13 +163,13 @@ class ConfiguracionScreen extends StatelessWidget {
                       vertical: 7,
                     ),
                     decoration: BoxDecoration(
-                      color: kVerdeClaro,
+                      color: kPrimarioClaro,
                       borderRadius: BorderRadius.circular(30),
                     ),
                     child: Text(
                       usuario.rol.label,
                       style: const TextStyle(
-                        color: kVerdeOscuro,
+                        color: kPrimarioOscuro,
                         fontWeight: FontWeight.w600,
                         fontSize: 12,
                       ),
@@ -242,6 +230,67 @@ class ConfiguracionScreen extends StatelessWidget {
 
             const SizedBox(height: 26),
 
+            // Cuidadores: antes estaba en el menú lateral.
+            if (usuario.rol == Rol.paciente) ...[
+              const Text(
+                'Mis cuidadores',
+                style: TextStyle(
+                  color: kOscuro,
+                  fontSize: 17,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              const SizedBox(height: 12),
+              Container(
+                decoration: BoxDecoration(
+                  color: kBlanco,
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(color: kPrimarioClaro),
+                ),
+                child: ListTile(
+                  contentPadding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 6,
+                  ),
+                  leading: Container(
+                    width: 48,
+                    height: 48,
+                    decoration: BoxDecoration(
+                      color: kPrimarioClaro,
+                      borderRadius: BorderRadius.circular(14),
+                    ),
+                    child: const Icon(
+                      Icons.people_outline_rounded,
+                      color: kPrimario,
+                      size: 27,
+                    ),
+                  ),
+                  title: const Text(
+                    'Administrar cuidadores',
+                    style: TextStyle(
+                      color: kOscuro,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  subtitle: Text(
+                    '${app.misCuidadores.length} registrados',
+                    style: const TextStyle(color: kTextoSecundario),
+                  ),
+                  trailing: const Icon(
+                    Icons.chevron_right_rounded,
+                    color: kTextoSecundario,
+                  ),
+                  onTap: () => Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const CuidadoresScreen(),
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 26),
+            ],
+
             // Reporte médico: disponible para el paciente.
             if (usuario.rol == Rol.paciente) ...[
               const Text(
@@ -258,7 +307,7 @@ class ConfiguracionScreen extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: kBlanco,
                   borderRadius: BorderRadius.circular(20),
-                  border: Border.all(color: kVerdeClaro),
+                  border: Border.all(color: kPrimarioClaro),
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -267,12 +316,12 @@ class ConfiguracionScreen extends StatelessWidget {
                       width: 48,
                       height: 48,
                       decoration: BoxDecoration(
-                        color: kVerdeClaro,
+                        color: kPrimarioClaro,
                         borderRadius: BorderRadius.circular(14),
                       ),
                       child: const Icon(
                         Icons.picture_as_pdf_rounded,
-                        color: kVerde,
+                        color: kPrimario,
                         size: 27,
                       ),
                     ),
@@ -306,7 +355,7 @@ class ConfiguracionScreen extends StatelessWidget {
                         icon: const Icon(Icons.download_rounded),
                         label: const Text('Descargar reporte PDF'),
                         style: FilledButton.styleFrom(
-                          backgroundColor: kVerde,
+                          backgroundColor: kPrimario,
                           foregroundColor: kBlanco,
                           padding: const EdgeInsets.symmetric(vertical: 14),
                           shape: RoundedRectangleBorder(
@@ -345,7 +394,7 @@ class ConfiguracionScreen extends StatelessWidget {
                 decoration: BoxDecoration(
                   color: kBlanco,
                   borderRadius: BorderRadius.circular(20),
-                  border: Border.all(color: kVerdeClaro),
+                  border: Border.all(color: kPrimarioClaro),
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -399,8 +448,8 @@ class ConfiguracionScreen extends StatelessWidget {
                         icon: const Icon(Icons.notifications_outlined),
                         label: const Text('Probar recordatorio'),
                         style: OutlinedButton.styleFrom(
-                          foregroundColor: kVerde,
-                          side: const BorderSide(color: kVerde),
+                          foregroundColor: kPrimario,
+                          side: const BorderSide(color: kPrimario),
                           padding: const EdgeInsets.symmetric(vertical: 13),
                         ),
                       ),
@@ -469,10 +518,10 @@ class _DatoUsuario extends StatelessWidget {
             width: 40,
             height: 40,
             decoration: BoxDecoration(
-              color: kVerdeClaro,
+              color: kPrimarioClaro,
               borderRadius: BorderRadius.circular(12),
             ),
-            child: Icon(icono, color: kVerde, size: 21),
+            child: Icon(icono, color: kPrimario, size: 21),
           ),
           const SizedBox(width: 12),
           Expanded(

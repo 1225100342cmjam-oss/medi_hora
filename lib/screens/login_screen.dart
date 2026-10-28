@@ -87,13 +87,13 @@ class _LoginScreenState extends State<LoginScreen> {
                           width: 88,
                           height: 88,
                           decoration: BoxDecoration(
-                            color: kVerdeClaro,
+                            color: kPrimarioClaro,
                             borderRadius: BorderRadius.circular(26),
                           ),
                           child: const Icon(
                             Icons.medical_services_rounded,
                             size: 48,
-                            color: kVerde,
+                            color: kPrimario,
                           ),
                         ),
                         const SizedBox(height: 18),
@@ -101,7 +101,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           'MediHora',
                           textAlign: TextAlign.center,
                           style: theme.textTheme.headlineMedium?.copyWith(
-                            color: kVerdeOscuro,
+                            color: kPrimarioOscuro,
                             fontWeight: FontWeight.bold,
                             fontSize: 30,
                           ),
@@ -129,7 +129,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(22),
                       side: const BorderSide(
-                        color: Color(0xFFDCE7E1),
+                        color: Color(0xFFD3E2F3),
                       ),
                     ),
                     child: Padding(
@@ -182,7 +182,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 hintText: 'ejemplo@correo.com',
                                 prefixIcon: const Icon(
                                   Icons.email_outlined,
-                                  color: kVerde,
+                                  color: kPrimario,
                                   size: 25,
                                 ),
                                 filled: true,
@@ -240,7 +240,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 hintText: 'Ingresa tu contraseña',
                                 prefixIcon: const Icon(
                                   Icons.lock_outline_rounded,
-                                  color: kVerde,
+                                  color: kPrimario,
                                   size: 25,
                                 ),
                                 suffixIcon: IconButton(
@@ -359,10 +359,10 @@ class _LoginScreenState extends State<LoginScreen> {
                               child: FilledButton.icon(
                                 onPressed: _cargando ? null : _entrar,
                                 style: FilledButton.styleFrom(
-                                  backgroundColor: kVerde,
+                                  backgroundColor: kPrimario,
                                   foregroundColor: Colors.white,
                                   disabledBackgroundColor:
-                                      kVerde.withValues(alpha: 0.6),
+                                      kPrimario.withValues(alpha: 0.6),
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(14),
                                   ),

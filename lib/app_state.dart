@@ -12,6 +12,8 @@ class AppState extends ChangeNotifier {
   List<Medicamento> meds = [];
   List<Cuidador> cuidadores = [];
   List<Toma> tomas = [];
+  /// Existencias del botiquín: id de medicamento -> cantidad disponible.
+  Map<String, int> existencias = {};
   AppUser? current;
 
   /// Recordatorios pospuestos (solo en memoria).
@@ -27,6 +29,8 @@ class AppState extends ChangeNotifier {
     meds = l('meds').map((e) => Medicamento.fromJson(e)).toList();
     cuidadores = l('cuidadores').map((e) => Cuidador.fromJson(e)).toList();
     tomas = l('tomas').map((e) => Toma.fromJson(e)).toList();
+    final ex = jsonDecode(p.getString('existencias') ?? '{}') as Map<String, dynamic>;
+    existencias = ex.map((k, v) => MapEntry(k, (v as num).toInt()));
     final session = p.getString('session');
     for (final u in users) {
       if (u.email == session) current = u;
@@ -39,6 +43,7 @@ class AppState extends ChangeNotifier {
     await p.setString('meds', jsonEncode(meds.map((e) => e.toJson()).toList()));
     await p.setString('cuidadores', jsonEncode(cuidadores.map((e) => e.toJson()).toList()));
     await p.setString('tomas', jsonEncode(tomas.map((e) => e.toJson()).toList()));
+    await p.setString('existencias', jsonEncode(existencias));
     if (current == null) {
       await p.remove('session');
     } else {
@@ -175,34 +180,32 @@ class AppState extends ChangeNotifier {
 
   void deleteMed(Medicamento m) {
     meds.removeWhere((e) => e.id == m.id);
+    existencias.remove(m.id);
     _changed();
   }
 
-  /// Marca la toma de hoy y devuelve la racha actual.
-  
-/// Marca el medicamento como tomado una sola vez al día.
-/// Si ya existe una toma, no crea otro registro.
-int marcarTomado(Medicamento m) {
-  if (tomadoHoy(m)) {
+  /// Marca el medicamento como tomado una sola vez al día y devuelve la racha.
+  /// Si ya existe una toma de hoy, no crea otro registro.
+  int marcarTomado(Medicamento m) {
+    if (tomadoHoy(m)) {
+      snoozeUntil.remove(m.id);
+      return racha(m.pacienteEmail);
+    }
+
+    tomas.add(Toma(
+      id: _id(),
+      medId: m.id,
+      nombre: m.nombre,
+      dosis: m.dosis,
+      pacienteEmail: m.pacienteEmail,
+      fecha: DateTime.now(),
+    ));
+
     snoozeUntil.remove(m.id);
+    _changed();
+
     return racha(m.pacienteEmail);
   }
-
-  tomas.add(Toma(
-    id: _id(),
-    medId: m.id,
-    nombre: m.nombre,
-    dosis: m.dosis,
-    pacienteEmail: m.pacienteEmail,
-    fecha: DateTime.now(),
-  ));
-
-  snoozeUntil.remove(m.id);
-  _changed();
-
-  return racha(m.pacienteEmail);
-}
-
 
   void desmarcar(Medicamento m) {
     final now = DateTime.now();
@@ -213,6 +216,14 @@ int marcarTomado(Medicamento m) {
   void posponer(Medicamento m) {
     snoozeUntil[m.id] = DateTime.now().add(const Duration(minutes: 10));
     notifyListeners();
+  }
+
+  // ---------- Botiquín ----------
+  int existenciaDe(String medId) => existencias[medId] ?? 0;
+
+  void setExistencia(String medId, int cantidad) {
+    existencias[medId] = cantidad < 0 ? 0 : cantidad;
+    _changed();
   }
 
   // ---------- Cuidadores ----------

@@ -14,17 +14,15 @@ class BotiquinScreen extends StatefulWidget {
 }
 
 class _BotiquinScreenState extends State<BotiquinScreen> {
-  final Map<String, int> existencias = {};
   String filtro = 'Todos';
 
+  // Las existencias viven en AppState para que se conserven y persistan.
   int cantidadDe(Medicamento medicamento) {
-    return existencias[medicamento.id] ?? 0;
+    return context.read<AppState>().existenciaDe(medicamento.id);
   }
 
   void cambiarCantidad(Medicamento medicamento, int cantidad) {
-    setState(() {
-      existencias[medicamento.id] = cantidad < 0 ? 0 : cantidad;
-    });
+    context.read<AppState>().setExistencia(medicamento.id, cantidad);
   }
 
   void mostrarEditor(Medicamento medicamento) {
@@ -52,7 +50,7 @@ class _BotiquinScreenState extends State<BotiquinScreen> {
           ),
           FilledButton(
             style: FilledButton.styleFrom(
-              backgroundColor: kVerde,
+              backgroundColor: kPrimario,
             ),
             onPressed: () {
               final cantidad = int.tryParse(controlador.text);
@@ -110,7 +108,7 @@ class _BotiquinScreenState extends State<BotiquinScreen> {
       backgroundColor: kFondo,
       appBar: AppBar(
         title: const Text('Mi botiquín'),
-        backgroundColor: kVerde,
+        backgroundColor: kPrimario,
         foregroundColor: kBlanco,
         elevation: 0,
       ),
@@ -121,7 +119,7 @@ class _BotiquinScreenState extends State<BotiquinScreen> {
             Container(
               padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
-                color: kVerde,
+                color: kPrimario,
                 borderRadius: BorderRadius.circular(22),
               ),
               child: const Column(
@@ -162,7 +160,7 @@ class _BotiquinScreenState extends State<BotiquinScreen> {
                     icono: Icons.check_circle_outline,
                     titulo: 'Disponibles',
                     cantidad: disponibles,
-                    color: kVerde,
+                    color: kPrimario,
                   ),
                 ),
                 const SizedBox(width: 8),
@@ -298,9 +296,9 @@ class _BotiquinScreenState extends State<BotiquinScreen> {
       child: ChoiceChip(
         label: Text(texto),
         selected: seleccionado,
-        selectedColor: kVerdeClaro,
+        selectedColor: kPrimarioClaro,
         labelStyle: TextStyle(
-          color: seleccionado ? kVerdeOscuro : kTextoSecundario,
+          color: seleccionado ? kPrimarioOscuro : kTextoSecundario,
           fontWeight: seleccionado
               ? FontWeight.bold
               : FontWeight.normal,
@@ -327,7 +325,7 @@ class _BotiquinScreenState extends State<BotiquinScreen> {
       colorEstado = kNaranja;
       estado = 'Existencias bajas';
     } else {
-      colorEstado = kVerde;
+      colorEstado = kPrimario;
       estado = 'Disponible';
     }
 
@@ -337,7 +335,7 @@ class _BotiquinScreenState extends State<BotiquinScreen> {
       decoration: BoxDecoration(
         color: kBlanco,
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(color: kVerdeClaro),
+        border: Border.all(color: kPrimarioClaro),
       ),
       child: Column(
         children: [
@@ -346,12 +344,12 @@ class _BotiquinScreenState extends State<BotiquinScreen> {
               Container(
                 padding: const EdgeInsets.all(12),
                 decoration: BoxDecoration(
-                  color: kVerdeClaro,
+                  color: kPrimarioClaro,
                   borderRadius: BorderRadius.circular(14),
                 ),
                 child: const Icon(
                   Icons.medication_rounded,
-                  color: kVerde,
+                  color: kPrimario,
                   size: 28,
                 ),
               ),
@@ -404,7 +402,7 @@ class _BotiquinScreenState extends State<BotiquinScreen> {
                 onPressed: () => mostrarEditor(medicamento),
                 icon: const Icon(
                   Icons.edit_outlined,
-                  color: kVerde,
+                  color: kPrimario,
                 ),
               ),
             ],
@@ -449,7 +447,7 @@ class _BotiquinScreenState extends State<BotiquinScreen> {
                 ),
                 icon: const Icon(
                   Icons.add_circle_outline,
-                  color: kVerde,
+                  color: kPrimario,
                 ),
               ),
             ],

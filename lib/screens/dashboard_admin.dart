@@ -1,6 +1,6 @@
 
 import 'package:flutter/material.dart';
-import 'package:medihora/models.dart';
+import '../models.dart';
 import 'package:provider/provider.dart';
 
 import '../app_state.dart';
@@ -20,14 +20,14 @@ class DashboardAdmin extends StatelessWidget {
           horizontal: 4,
         ),
         decoration: BoxDecoration(
-          color: kVerdeClaro,
+          color: kPrimarioClaro,
           borderRadius: BorderRadius.circular(12),
         ),
         child: Column(
           children: [
             Icon(
               icono,
-              color: kVerde,
+              color: kPrimario,
               size: 22,
             ),
             const SizedBox(height: 6),
@@ -36,7 +36,7 @@ class DashboardAdmin extends StatelessWidget {
               style: const TextStyle(
                 fontSize: 22,
                 fontWeight: FontWeight.w700,
-                color: kVerdeOscuro,
+                color: kPrimarioOscuro,
               ),
             ),
             const SizedBox(height: 3),
@@ -113,10 +113,10 @@ class DashboardAdmin extends StatelessWidget {
                       return ListTile(
                         contentPadding: EdgeInsets.zero,
                         leading: const CircleAvatar(
-                          backgroundColor: kVerdeClaro,
+                          backgroundColor: kPrimarioClaro,
                           child: Icon(
                             Icons.person_outline,
-                            color: kVerde,
+                            color: kPrimario,
                           ),
                         ),
                         title: Text(
@@ -129,7 +129,7 @@ class DashboardAdmin extends StatelessWidget {
                         subtitle: Text(usuario.email),
                         trailing: StatusChip(
                           label: usuario.rol.label,
-                          color: kVerde,
+                          color: kPrimario,
                         ),
                         onTap: () {
                           showDialog(

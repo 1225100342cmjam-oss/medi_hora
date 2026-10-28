@@ -128,15 +128,17 @@ class _NewMedicinaScreenState extends State<NewMedicinaScreen> {
 
       if (!mounted) return;
 
+      // Se toma el messenger antes de cerrar la pantalla.
+      final messenger = ScaffoldMessenger.of(context);
+      final texto = _esEdicion
+          ? 'Medicamento actualizado correctamente.'
+          : 'Medicamento guardado correctamente.';
+
       Navigator.pop(context);
 
-      ScaffoldMessenger.of(context).showSnackBar(
+      messenger.showSnackBar(
         SnackBar(
-          content: Text(
-            _esEdicion
-                ? 'Medicamento actualizado correctamente.'
-                : 'Medicamento guardado correctamente.',
-          ),
+          content: Text(texto),
           behavior: SnackBarBehavior.floating,
         ),
       );
@@ -184,7 +186,7 @@ class _NewMedicinaScreenState extends State<NewMedicinaScreen> {
       backgroundColor: kFondo,
       appBar: AppBar(
         title: Text(_esEdicion ? 'Editar medicamento' : 'Nuevo medicamento'),
-        backgroundColor: kVerde,
+        backgroundColor: kPrimario,
         foregroundColor: kBlanco,
         elevation: 0,
       ),
@@ -197,7 +199,7 @@ class _NewMedicinaScreenState extends State<NewMedicinaScreen> {
               Container(
                 padding: const EdgeInsets.all(20),
                 decoration: BoxDecoration(
-                  color: kVerde,
+                  color: kPrimario,
                   borderRadius: BorderRadius.circular(22),
                 ),
                 child: Row(
@@ -268,7 +270,7 @@ class _NewMedicinaScreenState extends State<NewMedicinaScreen> {
                 decoration: BoxDecoration(
                   color: kBlanco,
                   borderRadius: BorderRadius.circular(22),
-                  border: Border.all(color: kVerdeClaro),
+                  border: Border.all(color: kPrimarioClaro),
                 ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -353,7 +355,7 @@ class _NewMedicinaScreenState extends State<NewMedicinaScreen> {
                       ).copyWith(
                         suffixIcon: const Icon(
                           Icons.schedule_rounded,
-                          color: kVerde,
+                          color: kPrimario,
                         ),
                       ),
                     ),
@@ -402,9 +404,9 @@ class _NewMedicinaScreenState extends State<NewMedicinaScreen> {
                             : 'Guardar medicamento',
                   ),
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: kVerde,
+                    backgroundColor: kPrimario,
                     foregroundColor: kBlanco,
-                    disabledBackgroundColor: kVerdeClaro,
+                    disabledBackgroundColor: kPrimarioClaro,
                     elevation: 0,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(17),
@@ -426,8 +428,8 @@ class _NewMedicinaScreenState extends State<NewMedicinaScreen> {
                       ? null
                       : () => Navigator.pop(context),
                   style: OutlinedButton.styleFrom(
-                    foregroundColor: kVerde,
-                    side: const BorderSide(color: kVerde),
+                    foregroundColor: kPrimario,
+                    side: const BorderSide(color: kPrimario),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(17),
                     ),
@@ -462,7 +464,7 @@ class _NewMedicinaScreenState extends State<NewMedicinaScreen> {
         color: kTextoSecundario,
         fontSize: 13,
       ),
-      prefixIcon: Icon(icono, color: kVerde),
+      prefixIcon: Icon(icono, color: kPrimario),
       filled: true,
       fillColor: kFondo,
       contentPadding: const EdgeInsets.symmetric(
@@ -471,16 +473,16 @@ class _NewMedicinaScreenState extends State<NewMedicinaScreen> {
       ),
       border: OutlineInputBorder(
         borderRadius: BorderRadius.circular(14),
-        borderSide: const BorderSide(color: kVerdeClaro),
+        borderSide: const BorderSide(color: kPrimarioClaro),
       ),
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(14),
-        borderSide: const BorderSide(color: kVerdeClaro),
+        borderSide: const BorderSide(color: kPrimarioClaro),
       ),
       focusedBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(14),
         borderSide: const BorderSide(
-          color: kVerde,
+          color: kPrimario,
           width: 1.5,
         ),
       ),

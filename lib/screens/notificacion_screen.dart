@@ -41,12 +41,12 @@ class NotificacionScreen extends StatelessWidget {
                     width: 92,
                     height: 92,
                     decoration: BoxDecoration(
-                      color: kVerdeClaro,
+                      color: kPrimarioClaro,
                       borderRadius: BorderRadius.circular(28),
                     ),
                     child: const Icon(
                       Icons.notifications_active_rounded,
-                      color: kVerde,
+                      color: kPrimario,
                       size: 48,
                     ),
                   ),
@@ -56,7 +56,7 @@ class NotificacionScreen extends StatelessWidget {
                   const Text(
                     'MediHora',
                     style: TextStyle(
-                      color: kVerde,
+                      color: kPrimario,
                       fontSize: 17,
                       fontWeight: FontWeight.bold,
                       letterSpacing: 1.2,
@@ -96,10 +96,10 @@ class NotificacionScreen extends StatelessWidget {
                     decoration: BoxDecoration(
                       color: kBlanco,
                       borderRadius: BorderRadius.circular(24),
-                      border: Border.all(color: kVerdeClaro),
+                      border: Border.all(color: kPrimarioClaro),
                       boxShadow: [
                         BoxShadow(
-                          color: kVerde.withValues(alpha: 0.07),
+                          color: kPrimario.withValues(alpha: 0.07),
                           blurRadius: 18,
                           offset: const Offset(0, 6),
                         ),
@@ -116,7 +116,7 @@ class NotificacionScreen extends StatelessWidget {
                           ),
                           child: const Icon(
                             Icons.medication_rounded,
-                            color: kVerde,
+                            color: kPrimario,
                             size: 36,
                           ),
                         ),
@@ -141,13 +141,13 @@ class NotificacionScreen extends StatelessWidget {
                             vertical: 8,
                           ),
                           decoration: BoxDecoration(
-                            color: kVerdeClaro,
+                            color: kPrimarioClaro,
                             borderRadius: BorderRadius.circular(30),
                           ),
                           child: Text(
                             'Dosis: ${med.dosis}',
                             style: const TextStyle(
-                              color: kVerdeOscuro,
+                              color: kPrimarioOscuro,
                               fontWeight: FontWeight.w600,
                               fontSize: 14,
                             ),
@@ -156,7 +156,7 @@ class NotificacionScreen extends StatelessWidget {
 
                         const SizedBox(height: 20),
 
-                        const Divider(color: kVerdeClaro),
+                        const Divider(color: kPrimarioClaro),
 
                         const SizedBox(height: 12),
 
@@ -164,7 +164,7 @@ class NotificacionScreen extends StatelessWidget {
                           children: [
                             const Icon(
                               Icons.access_time_rounded,
-                              color: kVerde,
+                              color: kPrimario,
                               size: 24,
                             ),
                             const SizedBox(width: 12),
@@ -202,7 +202,7 @@ class NotificacionScreen extends StatelessWidget {
                               children: [
                                 const Icon(
                                   Icons.info_outline_rounded,
-                                  color: kVerde,
+                                  color: kPrimario,
                                   size: 21,
                                 ),
                                 const SizedBox(width: 10),
@@ -265,7 +265,7 @@ SizedBox(
     icon: const Icon(Icons.check_circle_outline_rounded),
     label: const Text('Ya lo tomé'),
     style: ElevatedButton.styleFrom(
-      backgroundColor: kVerde,
+      backgroundColor: kPrimario,
       foregroundColor: kBlanco,
       elevation: 0,
       shape: RoundedRectangleBorder(
@@ -303,8 +303,8 @@ SizedBox(
                       icon: const Icon(Icons.snooze_rounded),
                       label: const Text('Recordármelo en 10 minutos'),
                       style: OutlinedButton.styleFrom(
-                        foregroundColor: kVerde,
-                        side: const BorderSide(color: kVerde),
+                        foregroundColor: kPrimario,
+                        side: const BorderSide(color: kPrimario),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(17),
                         ),

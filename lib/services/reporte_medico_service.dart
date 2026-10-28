@@ -1,11 +1,10 @@
 
 import 'dart:typed_data';
 
-import 'package:flutter/material.dart';
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 
-import '../screens/models.dart';
+import '../models.dart';
 
 class ReporteMedicoService {
   static Future<Uint8List> generar({
@@ -15,9 +14,9 @@ class ReporteMedicoService {
   }) async {
     final pdf = pw.Document();
 
-    const verde = PdfColor.fromInt(0xFF176B5B);
-    const verdeClaro = PdfColor.fromInt(0xFFDCEFE8);
-    const gris = PdfColor.fromInt(0xFF52615B);
+    const verde = PdfColor.fromInt(0xFF1565C0);
+    const verdeClaro = PdfColor.fromInt(0xFFDCEBFA);
+    const gris = PdfColor.fromInt(0xFF4A5B70);
 
     final ahora = DateTime.now();
 
@@ -236,7 +235,7 @@ class ReporteMedicoService {
               data: (tomas.toList()
                     ..sort((a, b) => b.fecha.compareTo(a.fecha)))
                   .map((t) => [
-                        t!.nombre,
+                        t.nombre,
                         t.dosis,
                         fecha(t.fecha),
                         hora(
