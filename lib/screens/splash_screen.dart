@@ -1,8 +1,7 @@
 
+// ignore: unused_import
 import 'dart:math' as math;
-
 import 'package:flutter/material.dart';
-
 import '../theme.dart';
 import 'auth_gate.dart';
 

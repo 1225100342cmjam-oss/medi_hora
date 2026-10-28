@@ -1,6 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import '../theme.dart';
+// ignore: unused_import
 import 'ui.dart';
 
 /// Pantalla "Noti2": confirmación exitosa + racha.
