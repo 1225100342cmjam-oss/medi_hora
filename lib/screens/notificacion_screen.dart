@@ -234,6 +234,16 @@ SizedBox(
     onPressed: () {
       final app = context.read<AppState>();
 
+      if (!app.puedeRegistrarToma(med)) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('No tienes permiso para registrar esta toma.'),
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+        return;
+      }
+
       // Comprobar si ya se registró la toma hoy
       if (app.tomadoHoy(med)) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -288,20 +298,26 @@ SizedBox(
                     height: 54,
                     child: OutlinedButton.icon(
                       onPressed: () {
-                        context.read<AppState>().posponer(med);
+                        final app = context.read<AppState>();
+                        if (!app.puedeRegistrarToma(med)) return;
+                        final minutos =
+                            app.configDe(med.pacienteEmail).minutosPosposicion;
+                        app.posponer(med);
                         Navigator.pop(context);
 
                         ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
+                          SnackBar(
                             content: Text(
-                              'Recordatorio pospuesto por 10 minutos.',
+                              'Recordatorio pospuesto por $minutos minutos.',
                             ),
                             behavior: SnackBarBehavior.floating,
                           ),
                         );
                       },
                       icon: const Icon(Icons.snooze_rounded),
-                      label: const Text('Recordármelo en 10 minutos'),
+                      label: Text(
+                        'Recordármelo en ${context.watch<AppState>().configDe(med.pacienteEmail).minutosPosposicion} minutos',
+                      ),
                       style: OutlinedButton.styleFrom(
                         foregroundColor: kPrimario,
                         side: const BorderSide(color: kPrimario),
@@ -317,6 +333,26 @@ SizedBox(
                   ),
 
                   const SizedBox(height: 12),
+
+                  TextButton(
+                    onPressed: () {
+                      final app = context.read<AppState>();
+                      final err = app.puedeRegistrarToma(med)
+                          ? app.marcarOmitido(med)
+                          : 'No tienes permiso para registrar esta toma.';
+                      Navigator.pop(context);
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(err ?? 'La toma se marcó como omitida.'),
+                          behavior: SnackBarBehavior.floating,
+                        ),
+                      );
+                    },
+                    child: const Text(
+                      'Omitir esta toma',
+                      style: TextStyle(color: kRojo, fontSize: 14),
+                    ),
+                  ),
 
                   TextButton(
                     onPressed: () => Navigator.pop(context),

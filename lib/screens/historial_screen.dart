@@ -261,6 +261,19 @@ class _HistorialScreenState extends State<HistorialScreen> {
                   'Dosis: ${toma.dosis}',
                   style: const TextStyle(color: kTextoSecundario),
                 ),
+                if (toma.estado != EstadoToma.tomada || toma.tardia) ...[
+                  const SizedBox(height: 4),
+                  Text(
+                    toma.estado == EstadoToma.omitida
+                        ? 'Omitida${toma.nota != null ? ': ${toma.nota}' : ''}'
+                        : 'Registrada con retraso',
+                    style: const TextStyle(
+                      color: kNaranja,
+                      fontSize: 12,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
                 const SizedBox(height: 8),
                 Row(
                   children: [
@@ -282,9 +295,11 @@ class _HistorialScreenState extends State<HistorialScreen> {
               ],
             ),
           ),
-          const Icon(
-            Icons.check_circle_rounded,
-            color: kPrimario,
+          Icon(
+            toma.estado == EstadoToma.omitida
+                ? Icons.cancel_rounded
+                : Icons.check_circle_rounded,
+            color: toma.estado == EstadoToma.omitida ? kNaranja : kPrimario,
             size: 24,
           ),
         ],

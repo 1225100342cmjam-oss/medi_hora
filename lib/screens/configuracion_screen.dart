@@ -7,8 +7,11 @@ import '../app_state.dart';
 import '../models.dart';
 import '../theme.dart';
 import '../services/reporte_medico_service.dart';
+import 'ajustes_generales_screen.dart';
+import 'bitacora_screen.dart';
 import 'cuidadores_screen.dart';
 import 'notificacion_screen.dart';
+import 'perfil_screen.dart';
 
 class ConfiguracionScreen extends StatelessWidget {
   const ConfiguracionScreen({super.key});
@@ -23,8 +26,34 @@ class ConfiguracionScreen extends StatelessWidget {
     // Solo se incluyen datos del paciente que inició sesión.
     final medicamentos = app.medsDe(paciente.email);
     final tomas = app.tomas
-        .where((t) => t.pacienteEmail == paciente.email)
+        .where((t) =>
+            t.pacienteEmail == paciente.email && t.estado == EstadoToma.tomada)
         .toList();
+
+    // La exportación requiere confirmación explícita de la persona usuaria.
+    final confirmado = await showDialog<bool>(
+      context: context,
+      builder: (dialogContext) => AlertDialog(
+        title: const Text('Exportar reporte'),
+        content: const Text(
+          'El reporte incluye tus datos personales, medicamentos, dosis '
+          'registradas, horarios y el historial de tomas. Es un resumen de '
+          'adherencia: no contiene recomendaciones médicas. ¿Confirmas que '
+          'quieres generarlo y compartirlo?',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(dialogContext, false),
+            child: const Text('Cancelar'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.pop(dialogContext, true),
+            child: const Text('Generar'),
+          ),
+        ],
+      ),
+    );
+    if (confirmado != true || !context.mounted) return;
 
     try {
       messenger.showSnackBar(
@@ -210,7 +239,8 @@ class ConfiguracionScreen extends StatelessWidget {
                   _DatoUsuario(
                     icono: Icons.cake_outlined,
                     titulo: 'Edad',
-                    valor: '${usuario.edad} años',
+                    valor: '${usuario.edad} años'
+                        '${usuario.fechaNacimientoEstimada ? ' (aproximada)' : ''}',
                   ),
                   const Divider(height: 1),
                   _DatoUsuario(
@@ -224,6 +254,69 @@ class ConfiguracionScreen extends StatelessWidget {
                     titulo: 'Tipo de cuenta',
                     valor: usuario.rol.label,
                   ),
+                ],
+              ),
+            ),
+
+            const SizedBox(height: 26),
+
+            // Perfil, configuración y bitácora.
+            const Text(
+              'Privacidad y configuración',
+              style: TextStyle(
+                color: kOscuro,
+                fontSize: 17,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 12),
+            Container(
+              decoration: BoxDecoration(
+                color: kBlanco,
+                borderRadius: BorderRadius.circular(20),
+                border: Border.all(color: kPrimarioClaro),
+              ),
+              child: Column(
+                children: [
+                  ListTile(
+                    leading: const Icon(Icons.manage_accounts_outlined,
+                        color: kPrimario),
+                    title: const Text('Perfil y consentimientos'),
+                    trailing: const Icon(Icons.chevron_right_rounded),
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => const PerfilScreen()),
+                    ),
+                  ),
+                  const Divider(height: 1),
+                  ListTile(
+                    leading: const Icon(Icons.tune_rounded, color: kPrimario),
+                    title: const Text('Configuración general'),
+                    subtitle: const Text(
+                        'Posposición, existencias, zona horaria y avisos'),
+                    trailing: const Icon(Icons.chevron_right_rounded),
+                    onTap: () => Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (_) => const AjustesGeneralesScreen(),
+                      ),
+                    ),
+                  ),
+                  if (usuario.rol == Rol.paciente) ...[
+                    const Divider(height: 1),
+                    ListTile(
+                      leading: const Icon(Icons.fact_check_outlined,
+                          color: kPrimario),
+                      title: const Text('Bitácora de actividad'),
+                      trailing: const Icon(Icons.chevron_right_rounded),
+                      onTap: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => const BitacoraScreen(),
+                        ),
+                      ),
+                    ),
+                  ],
                 ],
               ),
             ),
@@ -273,7 +366,7 @@ class ConfiguracionScreen extends StatelessWidget {
                     ),
                   ),
                   subtitle: Text(
-                    '${app.misCuidadores.length} registrados',
+                    '${app.misCuidadores.where((c) => c.estado == EstadoVinculo.activo || c.estado == EstadoVinculo.pendiente).length} vigentes',
                     style: const TextStyle(color: kTextoSecundario),
                   ),
                   trailing: const Icon(

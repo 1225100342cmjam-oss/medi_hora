@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../app_state.dart';
+import '../models.dart';
 import '../theme.dart';
 import 'new_cuidador_screen.dart';
 import 'ui.dart';
@@ -13,14 +14,15 @@ class CuidadoresScreen extends StatelessWidget {
 
   Future<void> _confirmarEliminacion(
     BuildContext context,
-    dynamic cuidador,
+    Cuidador cuidador,
   ) async {
     final confirmar = await showDialog<bool>(
       context: context,
       builder: (dialogContext) => AlertDialog(
-        title: const Text('Eliminar cuidador'),
+        title: const Text('Revocar vínculo'),
         content: Text(
-          '¿Seguro que deseas eliminar a ${cuidador.nombre}?',
+          '${cuidador.nombre} dejará de ver tu información. El vínculo queda '
+          'registrado como revocado.',
         ),
         actions: [
           TextButton(
@@ -33,17 +35,17 @@ class CuidadoresScreen extends StatelessWidget {
               foregroundColor: Colors.white,
             ),
             onPressed: () => Navigator.pop(dialogContext, true),
-            child: const Text('Eliminar'),
+            child: const Text('Revocar'),
           ),
         ],
       ),
     );
 
     if (confirmar == true && context.mounted) {
-      context.read<AppState>().deleteCuidador(cuidador);
+      context.read<AppState>().revocarCuidador(cuidador);
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Cuidador eliminado correctamente'),
+          content: Text('Vínculo revocado'),
         ),
       );
     }
@@ -131,11 +133,37 @@ class CuidadoresScreen extends StatelessWidget {
                           Text('Parentesco: ${cuidador.parentesco}'),
                           const SizedBox(height: 2),
                           Text('Contacto: ${cuidador.contacto}'),
+                          const SizedBox(height: 2),
+                          Text(
+                            cuidador.soloContacto
+                                ? 'Solo contacto (sin acceso a datos)'
+                                : 'Estado: ${cuidador.estado.label}',
+                            style: TextStyle(
+                              fontWeight: FontWeight.w600,
+                              color: cuidador.estado == EstadoVinculo.activo
+                                  ? kPrimario
+                                  : kNaranja,
+                            ),
+                          ),
+                          if (!cuidador.soloContacto &&
+                              cuidador.permisos.isNotEmpty)
+                            Text(
+                              'Permisos: ${cuidador.permisos.map((p) => p.label).join(', ')}',
+                              style: const TextStyle(fontSize: 12),
+                            ),
+                          if (cuidador.fechaRevocacion != null)
+                            Text(
+                              'Revocado el ${cuidador.fechaRevocacion!.day}/${cuidador.fechaRevocacion!.month}/${cuidador.fechaRevocacion!.year}',
+                              style: const TextStyle(fontSize: 12),
+                            ),
                         ],
                       ),
                     ),
                     isThreeLine: true,
-                    trailing: PopupMenuButton<String>(
+                    enabled: cuidador.estado != EstadoVinculo.revocado,
+                    trailing: cuidador.estado == EstadoVinculo.revocado
+                        ? null
+                        : PopupMenuButton<String>(
                       tooltip: 'Opciones del cuidador',
                       onSelected: (opcion) {
                         if (opcion == 'editar') {
@@ -147,7 +175,7 @@ class CuidadoresScreen extends StatelessWidget {
                               ),
                             ),
                           );
-                        } else if (opcion == 'eliminar') {
+                        } else if (opcion == 'revocar') {
                           _confirmarEliminacion(context, cuidador);
                         }
                       },
@@ -163,12 +191,12 @@ class CuidadoresScreen extends StatelessWidget {
                           ),
                         ),
                         PopupMenuItem(
-                          value: 'eliminar',
+                          value: 'revocar',
                           child: Row(
                             children: [
-                              Icon(Icons.delete_outline, color: kRojo),
+                              Icon(Icons.block_rounded, color: kRojo),
                               SizedBox(width: 8),
-                              Text('Eliminar'),
+                              Text('Revocar'),
                             ],
                           ),
                         ),

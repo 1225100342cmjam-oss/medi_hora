@@ -33,7 +33,8 @@ class MedTile extends StatelessWidget {
         ),
         title: const Text('¿Eliminar medicamento?'),
         content: Text(
-          'Se eliminará "${med.nombre}" de tu lista de medicamentos.',
+          'Si ya tiene tomas registradas se archivará para conservar el historial; '
+          'si no, se eliminará "${med.nombre}" de la lista.',
         ),
         actions: [
           TextButton(
@@ -55,7 +56,17 @@ class MedTile extends StatelessWidget {
     return resultado ?? false;
   }
 
+  void _aviso(BuildContext context, String texto) {
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(content: Text(texto), behavior: SnackBarBehavior.floating),
+    );
+  }
+
   void _editar(BuildContext context) {
+    if (!context.read<AppState>().puedeEditarMed(med)) {
+      _aviso(context, 'No tienes permiso para editar este medicamento.');
+      return;
+    }
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -66,6 +77,11 @@ class MedTile extends StatelessWidget {
 
   void _cambiarEstado(BuildContext context, bool tomado) {
     final app = context.read<AppState>();
+
+    if (!app.puedeRegistrarToma(med)) {
+      _aviso(context, 'No tienes permiso para registrar tomas de este paciente.');
+      return;
+    }
 
     if (tomado) {
       app.desmarcar(med);
@@ -99,13 +115,21 @@ class MedTile extends StatelessWidget {
     return Dismissible(
       key: ValueKey(med.id),
       direction: DismissDirection.endToStart,
-      confirmDismiss: (_) => _confirmarEliminacion(context),
+      confirmDismiss: (_) async {
+        if (!context.read<AppState>().puedeEditarMed(med)) {
+          _aviso(context, 'No tienes permiso para eliminar este medicamento.');
+          return false;
+        }
+        return _confirmarEliminacion(context);
+      },
       onDismissed: (_) {
-        context.read<AppState>().deleteMed(med);
+        final archivado = context.read<AppState>().deleteMed(med);
 
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('${med.nombre} eliminado.'),
+            content: Text(archivado
+                ? '${med.nombre} archivado: conserva su historial de tomas.'
+                : '${med.nombre} eliminado.'),
             behavior: SnackBarBehavior.floating,
           ),
         );
@@ -290,13 +314,21 @@ class MedTile extends StatelessWidget {
                 if (opcion == 'editar') {
                   _editar(context);
                 } else if (opcion == 'eliminar') {
+                  if (!context.read<AppState>().puedeEditarMed(med)) {
+                    _aviso(context,
+                        'No tienes permiso para eliminar este medicamento.');
+                    return;
+                  }
                   _confirmarEliminacion(context).then((confirmado) {
                     if (confirmado && context.mounted) {
-                      context.read<AppState>().deleteMed(med);
+                      final archivado =
+                          context.read<AppState>().deleteMed(med);
 
                       ScaffoldMessenger.of(context).showSnackBar(
                         SnackBar(
-                          content: Text('${med.nombre} eliminado.'),
+                          content: Text(archivado
+                              ? '${med.nombre} archivado: conserva su historial de tomas.'
+                              : '${med.nombre} eliminado.'),
                           behavior: SnackBarBehavior.floating,
                         ),
                       );

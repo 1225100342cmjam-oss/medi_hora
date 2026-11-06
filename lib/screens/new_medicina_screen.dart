@@ -85,6 +85,9 @@ class _NewMedicinaScreenState extends State<NewMedicinaScreen> {
     return notas.isEmpty ? lineaCantidad : '$notas\n$lineaCantidad';
   }
 
+  late final TextEditingController _cantidadPorToma = TextEditingController(
+      text: '${widget.med?.cantidadPorToma ?? 1}');
+
   late String? _paciente = widget.med?.pacienteEmail;
 
   bool _guardando = false;
@@ -168,6 +171,10 @@ class _NewMedicinaScreenState extends State<NewMedicinaScreen> {
           _hora.text,
           _infoConCantidadCaja(),
         );
+        app.updateCantidadPorToma(
+          widget.med!,
+          int.parse(_cantidadPorToma.text.trim()),
+        );
       } else {
         app.addMed(
           _nombre.text.trim(),
@@ -175,6 +182,7 @@ class _NewMedicinaScreenState extends State<NewMedicinaScreen> {
           _hora.text,
           _infoConCantidadCaja(),
           emailPaciente,
+          cantidadPorToma: int.parse(_cantidadPorToma.text.trim()),
         );
       }
 
@@ -215,6 +223,7 @@ class _NewMedicinaScreenState extends State<NewMedicinaScreen> {
     _hora.dispose();
     _info.dispose();
     _tabletasCaja.dispose();
+    _cantidadPorToma.dispose();
     super.dispose();
   }
 
@@ -330,7 +339,7 @@ class _NewMedicinaScreenState extends State<NewMedicinaScreen> {
                       _etiqueta('Paciente'),
                       const SizedBox(height: 8),
                       DropdownButtonFormField<String>(
-                        value: app.pacientes.any(
+                        value: app.pacientesEditables.any(
                           (p) => p.email == _paciente,
                         )
                             ? _paciente
@@ -341,7 +350,7 @@ class _NewMedicinaScreenState extends State<NewMedicinaScreen> {
                           Icons.person_outline_rounded,
                         ),
                         items: [
-                          for (final paciente in app.pacientes)
+                          for (final paciente in app.pacientesEditables)
                             DropdownMenuItem(
                               value: paciente.email,
                               child: Text(
@@ -450,6 +459,37 @@ class _NewMedicinaScreenState extends State<NewMedicinaScreen> {
                     const SizedBox(height: 6),
                     Text(
                       'Registra la cantidad que indica el empaque. Si es una presentación distinta, anótala en información adicional.',
+                      style: TextStyle(
+                        color: kTextoSecundario,
+                        fontSize: 12,
+                        height: 1.35,
+                      ),
+                    ),
+
+                    const SizedBox(height: 20),
+
+                    _etiqueta('Unidades que se descuentan por toma'),
+                    const SizedBox(height: 8),
+                    TextFormField(
+                      controller: _cantidadPorToma,
+                      keyboardType: TextInputType.number,
+                      textInputAction: TextInputAction.next,
+                      validator: (valor) {
+                        final n = int.tryParse((valor ?? '').trim());
+                        if (n == null || n < 1 || n > 99) {
+                          return 'Escribe un número entre 1 y 99';
+                        }
+                        return null;
+                      },
+                      decoration: _decoracion(
+                        'Ej. 1',
+                        Icons.remove_circle_outline_rounded,
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    const Text(
+                      'Solo sirve para calcular las existencias. Captura lo que '
+                      'indica tu receta; MediHora no sugiere ni cambia dosis.',
                       style: TextStyle(
                         color: kTextoSecundario,
                         fontSize: 12,

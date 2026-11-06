@@ -22,7 +22,13 @@ class _BotiquinScreenState extends State<BotiquinScreen> {
   }
 
   void cambiarCantidad(Medicamento medicamento, int cantidad) {
-    context.read<AppState>().setExistencia(medicamento.id, cantidad);
+    final err =
+        context.read<AppState>().setExistencia(medicamento.id, cantidad);
+    if (err != null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(err), behavior: SnackBarBehavior.floating),
+      );
+    }
   }
 
   void mostrarEditor(Medicamento medicamento) {
@@ -77,14 +83,16 @@ class _BotiquinScreenState extends State<BotiquinScreen> {
   @override
   Widget build(BuildContext context) {
     final app = context.watch<AppState>();
-    final medicamentos = app.visibleMeds;
+    final medicamentos = app.medsConExistencias;
 
+    // El umbral de existencias bajas viene de Configuración General.
     final disponibles = medicamentos
-        .where((m) => cantidadDe(m) > 5)
+        .where((m) => cantidadDe(m) > app.umbralDe(m))
         .length;
 
     final bajos = medicamentos
-        .where((m) => cantidadDe(m) > 0 && cantidadDe(m) <= 5)
+        .where((m) =>
+            cantidadDe(m) > 0 && cantidadDe(m) <= app.umbralDe(m))
         .length;
 
     final agotados = medicamentos
@@ -94,11 +102,11 @@ class _BotiquinScreenState extends State<BotiquinScreen> {
     final filtrados = medicamentos.where((m) {
       switch (filtro) {
         case 'Existencias bajas':
-          return cantidadDe(m) > 0 && cantidadDe(m) <= 5;
+          return cantidadDe(m) > 0 && cantidadDe(m) <= app.umbralDe(m);
         case 'Agotados':
           return cantidadDe(m) == 0;
         case 'Disponibles':
-          return cantidadDe(m) > 5;
+          return cantidadDe(m) > app.umbralDe(m);
         default:
           return true;
       }
@@ -321,7 +329,7 @@ class _BotiquinScreenState extends State<BotiquinScreen> {
     if (cantidad == 0) {
       colorEstado = kRojo;
       estado = 'Agotado';
-    } else if (cantidad <= 5) {
+    } else if (cantidad <= context.read<AppState>().umbralDe(medicamento)) {
       colorEstado = kNaranja;
       estado = 'Existencias bajas';
     } else {

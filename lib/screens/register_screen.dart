@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 
 import '../app_state.dart';
 import '../models.dart';
+import '../security.dart';
 import '../theme.dart';
 
 class RegisterScreen extends StatefulWidget {
@@ -17,7 +18,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
   final _form = GlobalKey<FormState>();
 
   final _nombre = TextEditingController();
-  final _edad = TextEditingController();
+  final _telefono = TextEditingController();
+  DateTime? _fechaNacimiento;
+  bool _consSalud = false;
+  bool _consCompartir = false;
   final _email = TextEditingController();
   final _pass = TextEditingController();
   final _pass2 = TextEditingController();
@@ -32,14 +36,14 @@ class _RegisterScreenState extends State<RegisterScreen> {
   @override
   void dispose() {
     _nombre.dispose();
-    _edad.dispose();
+    _telefono.dispose();
     _email.dispose();
     _pass.dispose();
     _pass2.dispose();
     super.dispose();
   }
 
-  void _registrar() {
+  Future<void> _registrar() async {
     FocusScope.of(context).unfocus();
 
     if (!_form.currentState!.validate()) return;
@@ -50,12 +54,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
     });
 
     try {
-      final err = context.read<AppState>().register(
-            _nombre.text.trim(),
-            int.parse(_edad.text.trim()),
-            _email.text.trim(),
-            _pass.text,
-            _rol,
+      final err = await context.read<AppState>().register(
+            nombre: _nombre.text.trim(),
+            fechaNacimiento: _fechaNacimiento!,
+            email: _email.text.trim(),
+            telefono: _telefono.text.trim(),
+            pass: _pass.text,
+            rol: _rol,
+            consentimientoSalud: _consSalud,
+            consentimientoCompartir: _consCompartir,
           );
 
       if (!mounted) return;
@@ -78,6 +85,23 @@ class _RegisterScreenState extends State<RegisterScreen> {
       });
     }
   }
+
+  Future<void> _elegirFecha(FormFieldState<DateTime> campo) async {
+    final hoy = DateTime.now();
+    final elegida = await showDatePicker(
+      context: context,
+      initialDate: _fechaNacimiento ?? DateTime(hoy.year - 40, 1, 1),
+      firstDate: DateTime(hoy.year - 120, 1, 1),
+      lastDate: hoy,
+      helpText: 'Fecha de nacimiento',
+    );
+    if (elegida == null) return;
+    setState(() => _fechaNacimiento = elegida);
+    campo.didChange(elegida);
+  }
+
+  String _fmtFecha(DateTime f) =>
+      '${f.day.toString().padLeft(2, '0')}/${f.month.toString().padLeft(2, '0')}/${f.year}';
 
   String _descripcionRol(Rol rol) {
     return switch (rol) {
@@ -247,25 +271,52 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                           const SizedBox(height: 20),
 
-                          _etiqueta('Edad'),
+                          _etiqueta('Fecha de nacimiento'),
                           const SizedBox(height: 8),
-                          TextFormField(
-                            controller: _edad,
-                            keyboardType: TextInputType.number,
-                            textInputAction: TextInputAction.next,
-                            decoration: _decoracion(
-                              hint: 'Ejemplo: 45',
-                              icono: Icons.cake_outlined,
-                            ),
-                            style: _estiloCampo(),
-                            validator: (v) {
-                              final edad = int.tryParse(v?.trim() ?? '');
-
-                              if (edad == null || edad < 1 || edad > 120) {
-                                return 'Ingresa una edad válida';
+                          FormField<DateTime>(
+                            validator: (_) {
+                              final f = _fechaNacimiento;
+                              if (f == null) {
+                                return 'Selecciona tu fecha de nacimiento';
                               }
-
                               return null;
+                            },
+                            builder: (campo) {
+                              return Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  InkWell(
+                                    borderRadius: BorderRadius.circular(13),
+                                    onTap: () => _elegirFecha(campo),
+                                    child: InputDecorator(
+                                      decoration: _decoracion(
+                                        hint: 'Selecciona una fecha',
+                                        icono: Icons.cake_outlined,
+                                      ),
+                                      child: Text(
+                                        _fechaNacimiento == null
+                                            ? 'Selecciona una fecha'
+                                            : _fmtFecha(_fechaNacimiento!),
+                                        style: _estiloCampo().copyWith(
+                                          color: _fechaNacimiento == null
+                                              ? kTextoSecundario
+                                              : kTinta,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  if (campo.hasError)
+                                    Padding(
+                                      padding: const EdgeInsets.only(
+                                          top: 6, left: 12),
+                                      child: Text(
+                                        campo.errorText!,
+                                        style: const TextStyle(
+                                            color: kRojo, fontSize: 13),
+                                      ),
+                                    ),
+                                ],
+                              );
                             },
                           ),
 
@@ -303,6 +354,30 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
                           const SizedBox(height: 20),
 
+                          _etiqueta('Teléfono (opcional)'),
+                          const SizedBox(height: 8),
+                          TextFormField(
+                            controller: _telefono,
+                            keyboardType: TextInputType.phone,
+                            textInputAction: TextInputAction.next,
+                            autofillHints: const [AutofillHints.telephoneNumber],
+                            decoration: _decoracion(
+                              hint: 'Ejemplo: 461 123 4567',
+                              icono: Icons.phone_outlined,
+                            ),
+                            style: _estiloCampo(),
+                            validator: (v) {
+                              final t = v?.trim() ?? '';
+                              if (t.isEmpty) return null;
+                              if (!RegExp(r'^[0-9+()\-\s]{7,20}$').hasMatch(t)) {
+                                return 'Escribe un teléfono válido';
+                              }
+                              return null;
+                            },
+                          ),
+
+                          const SizedBox(height: 20),
+
                           _etiqueta('Contraseña'),
                           const SizedBox(height: 8),
                           TextFormField(
@@ -312,7 +387,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             autofillHints: const [AutofillHints.newPassword],
                             autocorrect: false,
                             decoration: _decoracion(
-                              hint: 'Mínimo 6 caracteres',
+                              hint: 'Mínimo 8 caracteres, con letras y números',
                               icono: Icons.lock_outline_rounded,
                               sufijo: IconButton(
                                 tooltip: _mostrarPass
@@ -332,10 +407,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                             ),
                             style: _estiloCampo(),
                             validator: (v) {
-                              if (v == null || v.length < 6) {
-                                return 'Utiliza al menos 6 caracteres';
-                              }
-                              return null;
+                              return Seguridad.validarPassword(v ?? '');
                             },
                           ),
 
@@ -405,10 +477,81 @@ class _RegisterScreenState extends State<RegisterScreen> {
                           ),
                           const SizedBox(height: 14),
 
-                          for (final rol in Rol.values)
+                          for (final rol in const [Rol.paciente, Rol.cuidador])
                             Padding(
                               padding: const EdgeInsets.only(bottom: 10),
                               child: _tarjetaRol(rol),
+                            ),
+
+                          const SizedBox(height: 18),
+                          const Text(
+                            'Privacidad y consentimiento',
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: kAzul,
+                            ),
+                          ),
+                          const SizedBox(height: 6),
+                          const Text(
+                            'MediHora organiza tus medicamentos; no sustituye las '
+                            'indicaciones de un profesional de la salud ni sugiere '
+                            'dosis.',
+                            style: TextStyle(
+                              fontSize: 14,
+                              height: 1.5,
+                              color: kTextoSecundario,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          FormField<bool>(
+                            validator: (_) => _consSalud
+                                ? null
+                                : 'Es necesario para crear tu cuenta',
+                            builder: (campo) => Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                CheckboxListTile(
+                                  contentPadding: EdgeInsets.zero,
+                                  controlAffinity:
+                                      ListTileControlAffinity.leading,
+                                  value: _consSalud,
+                                  onChanged: (v) {
+                                    setState(() => _consSalud = v ?? false);
+                                    campo.didChange(_consSalud);
+                                  },
+                                  title: const Text(
+                                    'Acepto que MediHora trate mis datos de salud '
+                                    '(medicamentos, tomas y existencias) para '
+                                    'darme recordatorios y seguimiento.',
+                                    style: TextStyle(fontSize: 15, height: 1.4),
+                                  ),
+                                ),
+                                if (campo.hasError)
+                                  Padding(
+                                    padding: const EdgeInsets.only(left: 12),
+                                    child: Text(
+                                      campo.errorText!,
+                                      style: const TextStyle(
+                                          color: kRojo, fontSize: 13),
+                                    ),
+                                  ),
+                              ],
+                            ),
+                          ),
+                          if (_rol == Rol.paciente)
+                            CheckboxListTile(
+                              contentPadding: EdgeInsets.zero,
+                              controlAffinity: ListTileControlAffinity.leading,
+                              value: _consCompartir,
+                              onChanged: (v) =>
+                                  setState(() => _consCompartir = v ?? false),
+                              title: const Text(
+                                'Autorizo compartir información con los '
+                                'cuidadores que yo invite (opcional). Puedo '
+                                'retirarlo cuando quiera.',
+                                style: TextStyle(fontSize: 15, height: 1.4),
+                              ),
                             ),
 
                           if (_error != null) ...[

@@ -28,7 +28,7 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 
-  void _entrar() {
+  Future<void> _entrar() async {
     FocusScope.of(context).unfocus();
 
     if (!_form.currentState!.validate()) return;
@@ -39,7 +39,7 @@ class _LoginScreenState extends State<LoginScreen> {
     });
 
     try {
-      final err = context.read<AppState>().login(
+      final err = await context.read<AppState>().login(
             _email.text.trim(),
             _pass.text,
           );

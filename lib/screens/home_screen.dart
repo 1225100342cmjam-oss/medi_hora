@@ -31,11 +31,14 @@ class _HomeScreenState extends State<HomeScreen> {
     final usuario = app.current;
     if (usuario == null) return;
 
-    // Cuidador y administrador eligen un paciente: debe existir al menos uno.
-    if (usuario.rol != Rol.paciente && app.pacientes.isEmpty) {
+    // El cuidador solo agrega medicamentos a pacientes que le dieron permiso
+    // de edición; el administrador no accede a datos clínicos.
+    if (usuario.rol != Rol.paciente && app.pacientesEditables.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Aún no hay pacientes registrados.'),
+          content: Text(
+            'No tienes pacientes que te hayan autorizado a editar medicamentos.',
+          ),
           behavior: SnackBarBehavior.floating,
         ),
       );

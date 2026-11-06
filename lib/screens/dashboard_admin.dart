@@ -128,8 +128,12 @@ class DashboardAdmin extends StatelessWidget {
                         ),
                         subtitle: Text(usuario.email),
                         trailing: StatusChip(
-                          label: usuario.rol.label,
-                          color: kPrimario,
+                          label: usuario.estado == EstadoCuenta.activa
+                              ? usuario.rol.label
+                              : '${usuario.rol.label} · ${usuario.estado.label}',
+                          color: usuario.estado == EstadoCuenta.activa
+                              ? kPrimario
+                              : kNaranja,
                         ),
                         onTap: () {
                           showDialog(
@@ -139,10 +143,30 @@ class DashboardAdmin extends StatelessWidget {
                                 title: Text(usuario.nombre),
                                 content: Text(
                                   'Rol: ${usuario.rol.label}\n'
-                                  'Edad: ${usuario.edad}\n'
-                                  'Correo: ${usuario.email}',
+                                  'Estado: ${usuario.estado.label}\n'
+                                  'Correo: ${usuario.email}\n\n'
+                                  'El administrador no tiene acceso a datos '
+                                  'clínicos.',
                                 ),
                                 actions: [
+                                  if (usuario.email != app.current?.email)
+                                    TextButton(
+                                      onPressed: () {
+                                        app.cambiarEstadoCuenta(
+                                          usuario,
+                                          usuario.estado ==
+                                                  EstadoCuenta.activa
+                                              ? EstadoCuenta.suspendida
+                                              : EstadoCuenta.activa,
+                                        );
+                                        Navigator.pop(dialogContext);
+                                      },
+                                      child: Text(
+                                        usuario.estado == EstadoCuenta.activa
+                                            ? 'Suspender cuenta'
+                                            : 'Reactivar cuenta',
+                                      ),
+                                    ),
                                   TextButton(
                                     onPressed: () {
                                       Navigator.pop(dialogContext);
